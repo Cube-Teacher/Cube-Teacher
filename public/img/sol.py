@@ -8,7 +8,7 @@ from pupil_apriltags import Detector
 
 terminal=sys.stdout
 
-cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0)
 cv2.namedWindow('camera', cv2.WINDOW_AUTOSIZE)
 detector1 = apriltag.Detector(families='tag36h11')
 
