@@ -1,5 +1,5 @@
 class teacherTemplate{
-    constructor(num_img, num_img_done, a_img, b_img, c_img, j_img, m_img, p_img, q_img, u_img){
+    constructor(num_img, num_img_done, a_img, b_img, c_img, j_img, m_img, p_img, q_img, u_img, start_img){
         this.title_text         = "";
         this.title_img          = [];
         this.title_text_bool    = false;
@@ -11,6 +11,7 @@ class teacherTemplate{
         this.step_img           = [];
         this.step_img_bool      = false;
         this.img = new Map([
+            ["start_img", start_img],
             ["1.png", num_img[0]],
             ["2.png", num_img[1]],
             ["3.png", num_img[2]],

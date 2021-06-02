@@ -116,6 +116,7 @@ var teach_sketch = function (p) {
     var p_img = []          // for image name: c1.png, c2.png ...       range : [1,15]
     var q_img = []          // for image name: c1.png, c2.png ...       range : [1,18]
     var u_img = []          // for image name: c1.png, c2.png ...       range : [1,7]
+    var start_img ;
 
     var Teacher ;
 
@@ -131,6 +132,7 @@ var teach_sketch = function (p) {
             num_img_done.push(p.loadImage(img_path + String(i) + "-1"+ img_extension));
         }
 
+        start_img = p.loadImage(img_path + "image" + img_extension);
         fetch_img(p, a_img, 23, "a", img_path, img_extension);
         fetch_img(p, b_img, 7,  "b", img_path, img_extension);
         fetch_img(p, c_img, 2,  "c", img_path, img_extension);
@@ -140,7 +142,7 @@ var teach_sketch = function (p) {
         fetch_img(p, q_img, 18, "q", img_path, img_extension);
         fetch_img(p, u_img, 7,  "u", img_path, img_extension);
 
-        Teacher = new teacherTemplate(num_img, num_img_done, a_img, b_img, c_img, j_img, m_img, p_img, q_img, u_img);
+        Teacher = new teacherTemplate(num_img, num_img_done, a_img, b_img, c_img, j_img, m_img, p_img, q_img, u_img, start_img);
     }
 
     p.draw = function () {
