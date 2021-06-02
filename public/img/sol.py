@@ -15,11 +15,6 @@ detector1 = apriltag.Detector(families='tag36h11')
 former=[]
 former1=0
 
-file=open("./init.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal
-
 file=open("./title_text.txt","w")
 file.write('')
 file.close()
@@ -188,7 +183,7 @@ def check_str(x):
     return 1
         
 def write_file(x):
-    file=open("./command.txt","w")
+    file=open("./command.txt","a")
     sys.stdout=file
     print(x)
     sys.stdout=terminal
