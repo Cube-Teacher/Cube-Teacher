@@ -8,7 +8,7 @@ from pupil_apriltags import Detector
 
 terminal=sys.stdout
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 cv2.namedWindow('camera', cv2.WINDOW_AUTOSIZE)
 detector1 = apriltag.Detector(families='tag36h11')
 
@@ -19,26 +19,27 @@ file=open("./init.txt","w")
 sys.stdout=file
 print("")
 sys.stdout=terminal
+
 file=open("./title_text.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal
+file.write('\n')
+file.close()
+
 file=open("./title_img.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal
+file.write('\n')
+file.close()
+
 file=open("./subtitle_text.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal
+file.write('\n')
+file.close()
+
 file=open("./subtitle_img.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal
+file.write('\n')
+file.close()
+
 file=open("./step_img.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal
+file.write('\n')
+file.close()
+
 
     
 start_flag=0
@@ -103,7 +104,7 @@ def print_operations(x):
         pic.append(i)
         
     file=open("./step_img.txt","w")
-    sys.stdout=file
+    
         
     
     
@@ -128,7 +129,8 @@ def print_operations(x):
             fromImge = Image.open(pic[i])
             loc = (offset+i*100,300)
             toImage.paste(fromImge, loc)
-            print(pic[i])
+            file.write(pic[i])
+            file.write('\n')
             
     elif(len(pic)>8):
         if(len(pic)-8==1):
@@ -149,7 +151,8 @@ def print_operations(x):
             offset=0
         for i in range(len(pic)):
             fromImge = Image.open(pic[i])
-            print(pic[i])
+            file.write(pic[i])
+            file.write('\n')
             if(i<=7):
                 loc = (i*100,300)
             else:
@@ -166,9 +169,8 @@ def print_operations(x):
         former.append(str(index)+'-1.png')
     former1=len(arr)
     
-    print("")
     
-    sys.stdout=terminal
+    file.close()
     
         
     return
@@ -737,6 +739,7 @@ def check_edge_and_middle(x,y):
     
     return 0
 
+
 toImage = Image.new('RGBA',(800,100))
 fromImge = Image.open('white.png')
 loc = (0,0)
@@ -758,16 +761,17 @@ toImage.paste(fromImge, loc)
 toImage.save('image.png')
 image1 = cv2.imread('image.png') 
 cv2.imshow('flow', image1)
+
 file=open("./title_text.txt","w")
-sys.stdout=file
-print('白色中心塊朝上 藍色中心塊朝前面 完成後開始教學')
-print("")
-sys.stdout=terminal
+file.write('白色中心塊朝上 藍色中心塊朝前面 完成後開始教學')
+file.write('\n')
+file.close()
+
 file=open("./title_img.txt","w")
-sys.stdout=file
-print('q16.png')
-print("")
-sys.stdout=terminal
+file.write('q16.png')
+file.write('\n')
+file.close()
+
     
 while (1):
     
@@ -904,21 +908,33 @@ toImage.paste(fromImge, loc)
 toImage.save('image.png')
 cv2.imshow('flow', image1)
 i1=0
+file=open("./title_text.txt","w")
+file.write('首先完成四個邊塊')
+file.write('\n')
+file.close()
+
+file=open("./title_img.txt","w")
+file.write('q1.png')
+file.write('\n')
+file.close()
+
+file=open("./subtitle_img.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./subtitle_text.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./step_img.txt","w")
+file.write('\n')
+file.close()
 while(i1<50):
     image=read_image()
     cv2.imshow('camera', image)
     i1=i1+1
     
-file=open("./title_text.txt","w")
-sys.stdout=file
-print('首先完成四個邊塊')
-print("")
-sys.stdout=terminal
-file=open("./title_img.txt","w")
-sys.stdout=file
-print('q1.png')
-print("")
-sys.stdout=terminal
+
 
                 
             
@@ -962,16 +978,16 @@ for it in range(0,4):#完成邊塊
     toImage.paste(fromImge, loc)
     toImage.save('image.png')
     cv2.imshow('flow', image1)
+    
     file=open("./title_text.txt","w")
-    sys.stdout=file
-    print('將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間')
-    print("")
-    sys.stdout=terminal
+    file.write('將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間')
+    file.write('\n')
+    file.close()
+    
     file=open("./title_img.txt","w")
-    sys.stdout=file
-    print('q'+str(it+2)+'.png')
-    print("")
-    sys.stdout=terminal  
+    file.write('q'+str(it+2)+'.png')
+    file.write('\n')
+    file.close()
 
     ii=0
     while(ii<50):
@@ -1068,17 +1084,18 @@ for it in range(0,4):#完成邊塊
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -1124,21 +1141,34 @@ toImage.paste(fromImge, loc)
 toImage.save('image.png')
 cv2.imshow('flow', image1)
 i1=0
+file=open("./title_text.txt","w")
+file.write('接下來完成四個角塊')
+file.write('\n')
+file.close()
+
+file=open("./title_img.txt","w")
+file.write('q6.png')
+file.write('\n')
+file.close()
+
+
+file=open("./subtitle_img.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./subtitle_text.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./step_img.txt","w")
+file.write('\n')
+file.close()
 while(i1<50):
     image=read_image()
     cv2.imshow('camera', image)
     i1=i1+1
                   
-file=open("./title_text.txt","w")
-sys.stdout=file
-print('接下來完成四個角塊')
-print("")
-sys.stdout=terminal
-file=open("./title_img.txt","w")
-sys.stdout=file
-print('q6.png')
-print("")
-sys.stdout=terminal
+
     
 for it in range(0,4):#完成角塊
     
@@ -1179,16 +1209,16 @@ for it in range(0,4):#完成角塊
     toImage.paste(fromImge, loc)
     toImage.save('image.png')
     cv2.imshow('flow', image1)
+    
     file=open("./title_text.txt","w")
-    sys.stdout=file
-    print('將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間')
-    print("")
-    sys.stdout=terminal
+    file.write('將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間')
+    file.write('\n')
+    file.close()
+    
     file=open("./title_img.txt","w")
-    sys.stdout=file
-    print('q'+str(it+7)+'.png')
-    print("")
-    sys.stdout=terminal  
+    file.write('q'+str(it+7)+'.png')
+    file.write('\n')
+    file.close() 
 
     ii=0
     while(ii<50):
@@ -1337,17 +1367,18 @@ for it in range(0,4):#完成角塊
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -1392,21 +1423,34 @@ toImage.paste(fromImge, loc)
 toImage.save('image.png')
 cv2.imshow('flow', image1)
 i1=0
+file=open("./title_text.txt","w")
+file.write('接下來完成第二層')
+file.write('\n')
+file.close() 
+
+file=open("./title_img.txt","w")
+file.write('q11.png')
+file.write('\n')
+file.close()         
+
+
+file=open("./subtitle_img.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./subtitle_text.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./step_img.txt","w")
+file.write('\n')
+file.close()   
 while(i1<50):
     image=read_image()
     cv2.imshow('camera', image)
     i1=i1+1  
 
-file=open("./title_text.txt","w")
-sys.stdout=file
-print('接下來完成第二層')
-print("")
-sys.stdout=terminal
-file=open("./title_img.txt","w")
-sys.stdout=file
-print('q11.png')
-print("")
-sys.stdout=terminal             
+
 
 
 while (1):#翻到底部
@@ -1436,17 +1480,18 @@ while (1):#翻到底部
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -1511,6 +1556,16 @@ for it in range(0,4):
     toImage.paste(fromImge, loc)
     toImage.save('image.png')
     cv2.imshow('flow', image1)
+    
+    file=open("./title_text.txt","w")
+    file.write('將'+string1+string2+'邊塊轉至正確位置')
+    file.write('\n')
+    file.close()
+    
+    file=open("./title_img.txt","w")
+    file.write('q'+str(it+12)+'.png')
+    file.write('\n')
+    file.close() 
 
     ii=0
     while(ii<50):
@@ -1609,17 +1664,18 @@ for it in range(0,4):
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -1667,21 +1723,34 @@ toImage.paste(fromImge, loc)
 toImage.save('image.png')
 cv2.imshow('flow', image1)
 i1=0
+file=open("./title_text.txt","w")
+file.write('接下來完成第二面')
+file.write('\n')
+file.close()
+
+file=open("./title_img.txt","w")
+file.write('q17.png')
+file.write('\n')
+file.close() 
+
+
+file=open("./subtitle_img.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./subtitle_text.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./step_img.txt","w")
+file.write('\n')
+file.close()
 while(i1<50):
     image=read_image()
     cv2.imshow('camera', image)
     i1=i1+1    
     
-file=open("./title_text.txt","w")
-sys.stdout=file
-print('接下來完成第二面')
-print("")
-sys.stdout=terminal
-file=open("./title_img.txt","w")
-sys.stdout=file
-print('q17.png')
-print("")
-sys.stdout=terminal  
+
     
 while (1):#頂面角塊都不是黃色
     
@@ -1723,17 +1792,18 @@ while (1):#頂面角塊都不是黃色
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -1813,17 +1883,18 @@ while (1):#頂面角塊兩個黃色
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -1989,17 +2060,18 @@ while (1):#頂面邊塊都是黃色
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -2044,21 +2116,33 @@ toImage.paste(fromImge, loc)
 toImage.save('image.png')
 cv2.imshow('flow', image1)
 i1=0
+file=open("./title_text.txt","w")
+file.write('接下來完成最後一層')
+file.write('\n')
+file.close() 
+
+file=open("./title_img.txt","w")
+file.write('q18.png')
+file.write('\n')
+file.close()  
+
+file=open("./subtitle_img.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./subtitle_text.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./step_img.txt","w")
+file.write('\n')
+file.close()
 while(i1<50):
     image=read_image()
     cv2.imshow('camera', image)
     i1=i1+1 
     
-file=open("./title_text.txt","w")
-sys.stdout=file
-print('接下來完成最後一層')
-print("")
-sys.stdout=terminal
-file=open("./title_img.txt","w")
-sys.stdout=file
-print('q18.png')
-print("")
-sys.stdout=terminal  
+
     
 while (1):#
     
@@ -2122,17 +2206,18 @@ while (1):#
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -2216,17 +2301,18 @@ while (1):#
                 key=1
         elif(check_str(str(operation[0]))==1):
             print(operation[0])
+            
             file=open("./subtitle_text.txt","w")
-            sys.stdout=file
-            print(operation[0])
-            print("")
-            sys.stdout=terminal
+            file.write(operation[0])
+            file.write('\n')
+            file.close()
+            
             file=open("./subtitle_img.txt","w")
-            sys.stdout=file
             if(check_str(str(operation[1]))==1):
-                print(operation[1])
-            print("")
-            sys.stdout=terminal
+                file.write(operation[1])
+            file.write('\n')
+            file.close()
+            
             toImage = Image.new('RGBA',(800,300))
             fromImge = Image.open('white.png')
             loc = (0,0)
@@ -2278,29 +2364,29 @@ toImage.paste(fromImge, loc)
 toImage.save('image.png')
 cv2.imshow('flow', image1)
 i1=0
+file=open("./title_text.txt","w")
+print('well done')
+file.write('\n')
+file.close()
+
+file=open("./title_img.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./subtitle_text.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./subtitle_img.txt","w")
+file.write('\n')
+file.close()
+
+file=open("./step_img.txt","w")
+file.write('\n')
+file.close()
 while(1):
     image=read_image()
     cv2.imshow('camera', image)
     i1=i1+1
 
-file=open("./title_text.txt","w")
-sys.stdout=file
-print('well done')
-print("")
-sys.stdout=terminal
-file=open("./title_img.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal 
-file=open("./subtitle_text.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal
-file=open("./subtitle_img.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal 
-file=open("./step_img.txt","w")
-sys.stdout=file
-print("")
-sys.stdout=terminal 
+
