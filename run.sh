@@ -2,7 +2,7 @@
 
 # execute sol.py 
 cd ./public/img
-python3 sol.py
+python3 sol.py &
 
 cd ..
 cd ..
