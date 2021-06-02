@@ -21,23 +21,23 @@ print("")
 sys.stdout=terminal
 
 file=open("./title_text.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./title_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./subtitle_text.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./subtitle_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./step_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 
@@ -739,7 +739,6 @@ def check_edge_and_middle(x,y):
     
     return 0
 
-
 toImage = Image.new('RGBA',(800,100))
 fromImge = Image.open('white.png')
 loc = (0,0)
@@ -763,13 +762,11 @@ image1 = cv2.imread('image.png')
 cv2.imshow('flow', image1)
 
 file=open("./title_text.txt","w")
-file.write('白色中心塊朝上 藍色中心塊朝前面 完成後開始教學')
-file.write('\n')
+file.write('白色中心塊朝上 藍色中心塊朝前面 完成後開始教學\n')
 file.close()
 
 file=open("./title_img.txt","w")
-file.write('q16.png')
-file.write('\n')
+file.write('q16.png\n')
 file.close()
 
     
@@ -919,15 +916,15 @@ file.write('\n')
 file.close()
 
 file=open("./subtitle_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./subtitle_text.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./step_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 while(i1<50):
     image=read_image()
@@ -1093,7 +1090,9 @@ for it in range(0,4):#完成邊塊
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -1153,15 +1152,15 @@ file.close()
 
 
 file=open("./subtitle_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./subtitle_text.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./step_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 while(i1<50):
     image=read_image()
@@ -1376,7 +1375,9 @@ for it in range(0,4):#完成角塊
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -1435,16 +1436,16 @@ file.close()
 
 
 file=open("./subtitle_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./subtitle_text.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./step_img.txt","w")
-file.write('\n')
-file.close()   
+file.write('')
+file.close()
 while(i1<50):
     image=read_image()
     cv2.imshow('camera', image)
@@ -1489,7 +1490,9 @@ while (1):#翻到底部
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -1673,7 +1676,9 @@ for it in range(0,4):
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -1735,15 +1740,15 @@ file.close()
 
 
 file=open("./subtitle_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./subtitle_text.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./step_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 while(i1<50):
     image=read_image()
@@ -1801,7 +1806,9 @@ while (1):#頂面角塊都不是黃色
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -1892,7 +1899,9 @@ while (1):#頂面角塊兩個黃色
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -2069,7 +2078,9 @@ while (1):#頂面邊塊都是黃色
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -2127,15 +2138,15 @@ file.write('\n')
 file.close()  
 
 file=open("./subtitle_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./subtitle_text.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./step_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 while(i1<50):
     image=read_image()
@@ -2215,7 +2226,9 @@ while (1):#
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -2310,7 +2323,9 @@ while (1):#
             file=open("./subtitle_img.txt","w")
             if(check_str(str(operation[1]))==1):
                 file.write(operation[1])
-            file.write('\n')
+                file.write('\n')
+            else:
+                file.write('')
             file.close()
             
             toImage = Image.new('RGBA',(800,300))
@@ -2370,19 +2385,20 @@ file.write('\n')
 file.close()
 
 file=open("./title_img.txt","w")
-file.write('\n')
+file.write('')
+file.close()
+
+
+file=open("./subtitle_img.txt","w")
+file.write('')
 file.close()
 
 file=open("./subtitle_text.txt","w")
-file.write('\n')
-file.close()
-
-file=open("./subtitle_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 
 file=open("./step_img.txt","w")
-file.write('\n')
+file.write('')
 file.close()
 while(1):
     image=read_image()
