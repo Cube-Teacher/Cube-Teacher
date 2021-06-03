@@ -7,6 +7,17 @@ const { RSA_NO_PADDING } = require('constants');
 const app = express()
 const port = 3000
 
+// start capture
+const videoStream = require('./videoStream');
+videoStream.acceptConnections(app, {
+    width: 1280,
+    height: 720,
+    fps: 16,
+    encoding: 'JPEG',
+    quality: 7        // lower is faster, less quality
+    },
+    '/stream.mjpg', true);
+
 app.use('/public', express.static(__dirname+"/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
