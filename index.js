@@ -11,7 +11,7 @@ const port = 3000
 const videoStream = require('./videoStream');
 videoStream.acceptConnections(app, {
     width: 1280,
-    height: 720,
+    height: 1280,
     fps: 16,
     encoding: 'JPEG',
     quality: 7        // lower is faster, less quality
