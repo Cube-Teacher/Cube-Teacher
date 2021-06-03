@@ -980,9 +980,17 @@ for it in range(0,4):#完成邊塊
     file.write('q'+str(it+2)+'.png')
     file.write('\n')
     file.close()
+    
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+    
+    file=open("./subtitle_img.txt","w")
+    file.write('')
+    file.close()
 
     ii=0
-    while(ii<50):
+    while(ii<1):
         image=read_image()
         cv2.imshow('camera', image)
         ii=ii+1
@@ -1212,10 +1220,18 @@ for it in range(0,4):#完成角塊
     file=open("./title_img.txt","w")
     file.write('q'+str(it+7)+'.png')
     file.write('\n')
-    file.close() 
+    file.close()
+    
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+    
+    file=open("./subtitle_img.txt","w")
+    file.write('')
+    file.close()
 
     ii=0
-    while(ii<50):
+    while(ii<1):
         image=read_image()
         cv2.imshow('camera', image)
         ii=ii+1
@@ -1566,7 +1582,7 @@ for it in range(0,4):
     file.close() 
 
     ii=0
-    while(ii<50):
+    while(ii<1):
         image=read_image()
         cv2.imshow('camera', image)
         ii=ii+1
