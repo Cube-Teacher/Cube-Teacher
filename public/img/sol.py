@@ -547,6 +547,7 @@ def read_image():
             
             count=count+1
     cv2.imshow('camera', image)
+    cv2.imwrite('a.jpg', image)
     global frame
     frame = image
     image1 = cv2.imread('image.png') 
