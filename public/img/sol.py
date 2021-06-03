@@ -516,7 +516,7 @@ def print_color(x):#把tag id換成顏色
         return'紅'
     elif(x>=46 and x<=54):
         return'黃'
-        
+
 def read_image():
     ret, image = cap.read()
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -542,6 +542,8 @@ def read_image():
             
             count=count+1
     cv2.imshow('camera', image)
+    global frame
+    frame = image
     image1 = cv2.imread('image.png') 
     cv2.imshow('flow', image1)
     cv2.waitKey(1)
