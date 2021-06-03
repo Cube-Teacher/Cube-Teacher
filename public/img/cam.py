@@ -9,7 +9,7 @@ import sol
 
 app = Flask(__name__)
 
-camera = cv2.VideoCapture(0)
+# camera = cv2.VideoCapture(0)
 detector1 = apriltag.Detector(families='tag36h11')
 
 

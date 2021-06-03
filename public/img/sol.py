@@ -518,7 +518,12 @@ def print_color(x):#把tag id換成顏色
         return'黃'
 
 def read_image():
+    
     ret, image = cap.read()
+    
+    if not ret:
+        return
+
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     results1 = detector1.detect(gray)
     
