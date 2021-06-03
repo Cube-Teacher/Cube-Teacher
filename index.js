@@ -4,19 +4,20 @@ const multiparty = require('multiparty');
 const fs = require('fs');
 const { argv } = require('process');
 const { RSA_NO_PADDING } = require('constants');
+const request = require('request');
 const app = express()
 const port = 3000
 
 // start capture
-const videoStream = require('./videoStream');
-videoStream.acceptConnections(app, {
-    width: 1280,
-    height: 1280,
-    fps: 16,
-    encoding: 'JPEG',
-    quality: 7        // lower is faster, less quality
-    },
-    '/stream.mjpg', true);
+// const videoStream = require('./videoStream');
+// videoStream.acceptConnections(app, {
+//     width: 1280,
+//     height: 1280,
+//     fps: 16,
+//     encoding: 'JPEG',
+//     quality: 7        // lower is faster, less quality
+//     },
+//     '/stream.mjpg', true);
 
 app.use('/public', express.static(__dirname+"/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +25,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     res.sendFile(__dirname+"/index.html");
 });
+
+app.get("/stream.jpg", (req,res)=>{
+    request('http://127.0.0.1:5000/flask', function (error, response, body) {
+        // console.error('error:', error);                             // Print the error
+        // console.log('statusCode:', response && response.statusCode);// Print the response status code if a response was received
+        // console.log('body:', body);     
+        
+    }).pipe(res);
+})
 
 app.get('/initend', (req, res) => {
     res.sendStatus(200);
