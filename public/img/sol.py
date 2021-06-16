@@ -15,6 +15,8 @@ detector1 = apriltag.Detector(families='tag36h11')
 former=[]
 former1=0
 
+key=0
+
 file=open("./title_text.txt","w")
 file.write('')
 file.close()
@@ -741,222 +743,169 @@ def check_edge_and_middle(x,y):
         return 1
     
     return 0
-
-toImage = Image.new('RGBA',(800,100))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-draw = ImageDraw.Draw(toImage)
-draw.text((20, 40), '白色中心塊朝上 藍色中心塊朝前面 完成後開始教學',font=font, fill=(0,0,0))
-toImage.save('word.png')
-toImage = Image.new('RGBA',(800,500))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('word.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('q16.png')
-loc = (0,100)
-toImage.paste(fromImge, loc)
-toImage.save('image.png')
-image1 = cv2.imread('image.png') 
-cv2.imshow('flow', image1)
-
-file=open("./title_text.txt","w")
-file.write('白色中心塊朝上 藍色中心塊朝前面 完成後開始教學\n')
-file.close()
-
-file=open("./title_img.txt","w")
-file.write('q16.png\n')
-file.close()
-
+def run():
+    global key
+    global wrong_key
+    global former
+    global former1
+    initial_color_done=[0,0,0,0,0,0]
     
-while (1):
+    toImage = Image.new('RGBA',(800,100))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+    draw = ImageDraw.Draw(toImage)
+    draw.text((20, 40), '白色中心塊朝上 藍色中心塊朝前面 完成後開始教學',font=font, fill=(0,0,0))
+    toImage.save('word.png')
+    toImage = Image.new('RGBA',(800,500))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    fromImge = Image.open('word.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    fromImge = Image.open('q16.png')
+    loc = (0,100)
+    toImage.paste(fromImge, loc)
+    toImage.save('image.png')
+    image1 = cv2.imread('image.png') 
+    cv2.imshow('flow', image1)
+
+    file=open("./title_text.txt","w")
+    file.write('白色中心塊朝上 藍色中心塊朝前面 完成後開始教學\n')
+    file.close()
+
+    file=open("./title_img.txt","w")
+    file.write('q16.png\n')
+    file.close()
     
-    image=read_image()
+    file=open("./subtitle_img.txt","w")
+    file.write('')
+    file.close()
     
-    for i in range(0,9):
-        now_color[i]=color_detect_id[i]
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+    
+    file=open("./step_img.txt","w")
+    file.write('')
+    file.close()
+
         
-    if(initial_color_done[int((now_color[4]-5)/9)]==0 and now_color[4]!=0):
-        initial_color_done[int((now_color[4]-5)/9)]=1
+    while (1):
+        
+        image=read_image()
+        
         for i in range(0,9):
-            initial_color[int((now_color[4]-5)/9)][i]=color_detect_id[i]
+            now_color[i]=color_detect_id[i]
             
+        if(initial_color_done[int((now_color[4]-5)/9)]==0 and now_color[4]!=0):
+            initial_color_done[int((now_color[4]-5)/9)]=1
+            for i in range(0,9):
+                initial_color[int((now_color[4]-5)/9)][i]=color_detect_id[i]
+                
 
-      
-    cv2.imshow('camera', image)
-    image1 = cv2.imread('image.png') 
-    #cv2.imshow('flow', image1)
-    cv2.waitKey(1)
-    
-    if(sum(initial_color_done)==6):
-        break
-
-for i in range(1,5):
-    for j in range(1,5):
-        if j==1:
-            index=7
-        if j==2:
-            index=1
-        if j==3 :
-            index=5
-        if j==4:
-            index=3
-        for k in range(1,5):
-            if(check_edge(initial_color[0][index],initial_color[i][1])==1):
-                break
-            temp=initial_color[i][1]
-            initial_color[i][1]=initial_color[i][3]
-            initial_color[i][3]=initial_color[i][7]
-            initial_color[i][7]=initial_color[i][5]
-            initial_color[i][5]=temp
-            temp=initial_color[i][0]
-            initial_color[i][0]=initial_color[i][6]
-            initial_color[i][6]=initial_color[i][8]
-            initial_color[i][8]=initial_color[i][2]
-            initial_color[i][2]=temp
-
-
-while(check_edge(initial_color[1][7],initial_color[5][1])==0):
-    temp=initial_color[5][1]
-    initial_color[5][1]=initial_color[5][3]
-    initial_color[5][3]=initial_color[5][7]
-    initial_color[5][7]=initial_color[5][5]
-    initial_color[5][5]=temp
-    temp=initial_color[5][0]
-    initial_color[5][0]=initial_color[5][6]
-    initial_color[5][6]=initial_color[5][8]
-    initial_color[5][8]=initial_color[5][2]
-    initial_color[5][2]=temp        
-
-for i in range(1,5):
-    if(check_edge(initial_color[0][7],initial_color[1][1])==1):
-        break
-    temp=initial_color[0][1]
-    initial_color[0][1]=initial_color[0][3]
-    initial_color[0][3]=initial_color[0][7]
-    initial_color[0][7]=initial_color[0][5]
-    initial_color[0][5]=temp
-    temp=initial_color[0][0]
-    initial_color[0][0]=initial_color[0][6]
-    initial_color[0][6]=initial_color[0][8]
-    initial_color[0][8]=initial_color[0][2]
-    initial_color[0][2]=temp
-    
-for i in range(0,9):
-    top_color[i]=initial_color[0][i]
-    
-    
-print('display:')
-for i in range(0,6):
-    print('\n')
-    for j in range(0,3):
-        print(print_color(initial_color[i][3*j]),
-              print_color(initial_color[i][3*j+1]),
-              print_color(initial_color[i][3*j+2]),'\n')
-        write__color_file(initial_color[i][3*j])
-        write__color_file(initial_color[i][3*j+1])
-        write__color_file(initial_color[i][3*j+2])
+          
+        cv2.imshow('camera', image)
+        image1 = cv2.imread('image.png') 
+        #cv2.imshow('flow', image1)
+        cv2.waitKey(1)
         
+        if(sum(initial_color_done)==6):
+            break
+
+    for i in range(1,5):
+        for j in range(1,5):
+            if j==1:
+                index=7
+            if j==2:
+                index=1
+            if j==3 :
+                index=5
+            if j==4:
+                index=3
+            for k in range(1,5):
+                if(check_edge(initial_color[0][index],initial_color[i][1])==1):
+                    break
+                temp=initial_color[i][1]
+                initial_color[i][1]=initial_color[i][3]
+                initial_color[i][3]=initial_color[i][7]
+                initial_color[i][7]=initial_color[i][5]
+                initial_color[i][5]=temp
+                temp=initial_color[i][0]
+                initial_color[i][0]=initial_color[i][6]
+                initial_color[i][6]=initial_color[i][8]
+                initial_color[i][8]=initial_color[i][2]
+                initial_color[i][2]=temp
 
 
+    while(check_edge(initial_color[1][7],initial_color[5][1])==0):
+        temp=initial_color[5][1]
+        initial_color[5][1]=initial_color[5][3]
+        initial_color[5][3]=initial_color[5][7]
+        initial_color[5][7]=initial_color[5][5]
+        initial_color[5][5]=temp
+        temp=initial_color[5][0]
+        initial_color[5][0]=initial_color[5][6]
+        initial_color[5][6]=initial_color[5][8]
+        initial_color[5][8]=initial_color[5][2]
+        initial_color[5][2]=temp        
 
-while(1):
-
-    image=read_image()
-    
-    
-    initial_flag=0
-    
+    for i in range(1,5):
+        if(check_edge(initial_color[0][7],initial_color[1][1])==1):
+            break
+        temp=initial_color[0][1]
+        initial_color[0][1]=initial_color[0][3]
+        initial_color[0][3]=initial_color[0][7]
+        initial_color[0][7]=initial_color[0][5]
+        initial_color[0][5]=temp
+        temp=initial_color[0][0]
+        initial_color[0][0]=initial_color[0][6]
+        initial_color[0][6]=initial_color[0][8]
+        initial_color[0][8]=initial_color[0][2]
+        initial_color[0][2]=temp
+        
     for i in range(0,9):
-        if(now_color[i]!=initial_color[0][i]):
-            initial_flag=1
+        top_color[i]=initial_color[0][i]
+        
+        
+    print('display:')
+    for i in range(0,6):
+        print('\n')
+        for j in range(0,3):
+            print(print_color(initial_color[i][3*j]),
+                  print_color(initial_color[i][3*j+1]),
+                  print_color(initial_color[i][3*j+2]),'\n')
+            write__color_file(initial_color[i][3*j])
+            write__color_file(initial_color[i][3*j+1])
+            write__color_file(initial_color[i][3*j+2])
             
-    if(initial_flag==0):
-       print('start!')
-       break
-   
-     
-    
-    cv2.imshow('camera', image)
-    image1 = cv2.imread('image.png') 
-    cv2.imshow('flow', image1)
-    cv2.waitKey(1)
 
 
-toImage = Image.new('RGBA',(800,100))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-draw = ImageDraw.Draw(toImage)
-draw.text((20, 40), '首先完成四個邊塊',font=font, fill=(0,0,0))
-toImage.save('word.png')
-toImage = Image.new('RGBA',(800,500))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('word.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('q1.png')
-loc = (0,100)
-toImage.paste(fromImge, loc)
-toImage.save('image.png')
-cv2.imshow('flow', image1)
-i1=0
-file=open("./title_text.txt","w")
-file.write('首先完成四個邊塊')
-file.write('\n')
-file.close()
 
-file=open("./title_img.txt","w")
-file.write('q1.png')
-file.write('\n')
-file.close()
+    while(1):
 
-file=open("./subtitle_img.txt","w")
-file.write('')
-file.close()
-
-file=open("./subtitle_text.txt","w")
-file.write('')
-file.close()
-
-file=open("./step_img.txt","w")
-file.write('')
-file.close()
-while(i1<50):
-    image=read_image()
-    cv2.imshow('camera', image)
-    i1=i1+1
-    
-
-
+        image=read_image()
+        
+        
+        initial_flag=0
+        
+        for i in range(0,9):
+            if(now_color[i]!=initial_color[0][i]):
+                initial_flag=1
                 
-            
-    
-for it in range(0,4):#完成邊塊
+        if(initial_flag==0):
+           print('start!')
+           break
+       
+         
+        
+        cv2.imshow('camera', image)
+        image1 = cv2.imread('image.png') 
+        cv2.imshow('flow', image1)
+        cv2.waitKey(1)
 
-    if(it==0):
-        color1=8
-        color2=11
-        string='藍'
-    elif(it==1):
-        color1=6
-        color2=29
-        string='橘'
-    elif(it==2):
-        color1=2
-        color2=20
-        string='綠'
-    elif(it==3):
-        color1=4
-        color2=38
-        string='紅'
 
     toImage = Image.new('RGBA',(800,100))
     fromImge = Image.open('white.png')
@@ -964,7 +913,7 @@ for it in range(0,4):#完成邊塊
     toImage.paste(fromImge, loc)
     font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
     draw = ImageDraw.Draw(toImage)
-    draw.text((20, 40), '將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間',font=font, fill=(0,0,0))
+    draw.text((20, 40), '首先完成四個邊塊',font=font, fill=(0,0,0))
     toImage.save('word.png')
     toImage = Image.new('RGBA',(800,500))
     fromImge = Image.open('white.png')
@@ -973,239 +922,327 @@ for it in range(0,4):#完成邊塊
     fromImge = Image.open('word.png')
     loc = (0,0)
     toImage.paste(fromImge, loc)
-    fromImge = Image.open('q'+str(it+2)+'.png')
+    fromImge = Image.open('q1.png')
     loc = (0,100)
     toImage.paste(fromImge, loc)
     toImage.save('image.png')
     cv2.imshow('flow', image1)
-    
+    i1=0
     file=open("./title_text.txt","w")
-    file.write('將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間')
+    file.write('首先完成四個邊塊')
     file.write('\n')
     file.close()
-    
+
     file=open("./title_img.txt","w")
-    file.write('q'+str(it+2)+'.png')
+    file.write('q1.png')
     file.write('\n')
     file.close()
-    
-    file=open("./subtitle_text.txt","w")
-    file.write('')
-    file.close()
-    
+
     file=open("./subtitle_img.txt","w")
     file.write('')
     file.close()
 
-    ii=0
-    while(ii<1):
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./step_img.txt","w")
+    file.write('')
+    file.close()
+    while(i1<50):
         image=read_image()
         cv2.imshow('camera', image)
-        ii=ii+1
-    
-    
-    
-    operation=[]
-    print('將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間')
-    
-    if(initial_color[0][7]==color1 and initial_color[1][1]==color2):
-        operation=['白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[1][1]==color1 and initial_color[0][7]==color2):
-        operation=['白'+string+'邊塊在正確位置 但方向錯誤','p8.png',7,14,2,13,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[3][3]==color1 and initial_color[1][5]==color2):
-        operation=['白'+string+'邊塊在前面右側','p12.png',8,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[1][5]==color1 and initial_color[3][3]==color2):
-        operation=['白'+string+'邊塊在前面右側','p12.png',14,2,13,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[4][5]==color1 and initial_color[1][3]==color2):
-        operation=['白'+string+'邊塊在前面左側','p10.png',7,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[1][3]==color1 and initial_color[4][5]==color2):
-        operation=['白'+string+'邊塊在前面左側','p10.png',13,4,14,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[5][1]==color1 and initial_color[1][7]==color2):
-        operation=['白'+string+'邊塊在前面下方','p14.png',7,7,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[1][7]==color1 and initial_color[5][1]==color2):
-        operation=['白'+string+'邊塊在前面下方','p14.png',7,13,4,14,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[0][5]==color1 and initial_color[3][1]==color2):
-        operation=['白'+string+'邊塊在上面右側','p6.png',1,14,2,13,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[3][1]==color1 and initial_color[0][5]==color2):
-        operation=['白'+string+'邊塊在上面右側','p6.png',1,8,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[2][3]==color1 and initial_color[3][5]==color2):
-        operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面右側','p12.png',14,8,13,'回到左側面',20,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[3][5]==color1 and initial_color[2][3]==color2):
-        operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面右側','p12.png',14,14,2,13,13,'回到左側面',20,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[5][5]==color1 and initial_color[3][7]==color2):
-        operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面下方','p14.png',14,7,7,13,'回到左側面',20,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[3][7]==color1 and initial_color[5][5]==color2):
-        operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面下方','p14.png',14,7,13,4,'回到左側面',20,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]        
-    elif(initial_color[0][3]==color1 and initial_color[4][1]==color2):
-        operation=['白'+string+'邊塊在上面左側','p4.png',14,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[4][1]==color1 and initial_color[0][3]==color2):
-        operation=['白'+string+'邊塊在上面左側','p4.png',3,7,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]       
-    elif(initial_color[2][5]==color1 and initial_color[4][3]==color2):
-        operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面左側','p10.png',13,7,14,'回到右側面',19,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[4][3]==color1 and initial_color[2][5]==color2):
-        operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面左側','p10.png',13,13,4,14,14,'回到右側面',19,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[5][3]==color1 and initial_color[4][7]==color2):
-        operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面下方','p14.png',13,7,7,14,'回到右側面',19,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[4][7]==color1 and initial_color[5][3]==color2):
-        operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面下方','p14.png',13,8,14,2,'回到右側面',19,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]        
-    elif(initial_color[0][1]==color1 and initial_color[2][1]==color2):
-        operation=['白'+string+'邊塊在上面上方','p2.png',3,13,13,4,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[2][1]==color1 and initial_color[0][1]==color2):
-        operation=['白'+string+'邊塊在後面',20,20,'白'+string+'邊塊在前面上方','p8.png',7,13,2,14,'回到前面',19,19,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]        
-    elif(initial_color[5][7]==color1 and initial_color[2][7]==color2):
-        operation=['白'+string+'邊塊在後面',20,20,'白'+string+'邊塊在前面下方','p14.png',14,14,7,7,14,14,'回到前面',19,19,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
-    elif(initial_color[2][7]==color1 and initial_color[5][7]==color2):
-        operation=['白'+string+'邊塊在後面',20,20,'白'+string+'邊塊在前面下方','p14.png',14,14,7,13,4,13,'回到前面',19,19,
-                   '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        i1=i1+1
         
-    
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
-            break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
-            
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
-            
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
-                file.write('\n')
-            else:
-                file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
-                toImage.paste(fromImge, loc)
-                operation=operation[1:]
+
+
+                    
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-     
+        
+    for it in range(0,4):#完成邊塊
 
-toImage = Image.new('RGBA',(800,100))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-draw = ImageDraw.Draw(toImage)
-draw.text((20, 40), '接下來完成四個角塊',font=font, fill=(0,0,0))
-toImage.save('word.png')
-toImage = Image.new('RGBA',(800,500))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('word.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('q6.png')
-loc = (0,100)
-toImage.paste(fromImge, loc)
-toImage.save('image.png')
-cv2.imshow('flow', image1)
-i1=0
-file=open("./title_text.txt","w")
-file.write('接下來完成四個角塊')
-file.write('\n')
-file.close()
+        if(it==0):
+            color1=8
+            color2=11
+            string='藍'
+        elif(it==1):
+            color1=6
+            color2=29
+            string='橘'
+        elif(it==2):
+            color1=2
+            color2=20
+            string='綠'
+        elif(it==3):
+            color1=4
+            color2=38
+            string='紅'
 
-file=open("./title_img.txt","w")
-file.write('q6.png')
-file.write('\n')
-file.close()
+        toImage = Image.new('RGBA',(800,100))
+        fromImge = Image.open('white.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+        draw = ImageDraw.Draw(toImage)
+        draw.text((20, 40), '將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間',font=font, fill=(0,0,0))
+        toImage.save('word.png')
+        toImage = Image.new('RGBA',(800,500))
+        fromImge = Image.open('white.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        fromImge = Image.open('word.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        fromImge = Image.open('q'+str(it+2)+'.png')
+        loc = (0,100)
+        toImage.paste(fromImge, loc)
+        toImage.save('image.png')
+        cv2.imshow('flow', image1)
+        
+        file=open("./title_text.txt","w")
+        file.write('將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間')
+        file.write('\n')
+        file.close()
+        
+        file=open("./title_img.txt","w")
+        file.write('q'+str(it+2)+'.png')
+        file.write('\n')
+        file.close()
+        
+        file=open("./subtitle_text.txt","w")
+        file.write('')
+        file.close()
+        
+        file=open("./subtitle_img.txt","w")
+        file.write('')
+        file.close()
+        
+        file=open("./step_img.txt","w")
+        file.write('')
+        file.close()
 
-
-file=open("./subtitle_img.txt","w")
-file.write('')
-file.close()
-
-file=open("./subtitle_text.txt","w")
-file.write('')
-file.close()
-
-file=open("./step_img.txt","w")
-file.write('')
-file.close()
-while(i1<50):
-    image=read_image()
-    cv2.imshow('camera', image)
-    i1=i1+1
+        ii=0
+        while(ii<1):
+            image=read_image()
+            cv2.imshow('camera', image)
+            ii=ii+1
+        
+        
+        
+        operation=[]
+        print('將白'+string+'邊塊轉至 白色中心塊和'+string+'色中心塊之間')
+        
+        if(initial_color[0][7]==color1 and initial_color[1][1]==color2):
+            operation=['白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[1][1]==color1 and initial_color[0][7]==color2):
+            operation=['白'+string+'邊塊在正確位置 但方向錯誤','p8.png',7,14,2,13,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[3][3]==color1 and initial_color[1][5]==color2):
+            operation=['白'+string+'邊塊在前面右側','p12.png',8,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[1][5]==color1 and initial_color[3][3]==color2):
+            operation=['白'+string+'邊塊在前面右側','p12.png',14,2,13,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[4][5]==color1 and initial_color[1][3]==color2):
+            operation=['白'+string+'邊塊在前面左側','p10.png',7,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[1][3]==color1 and initial_color[4][5]==color2):
+            operation=['白'+string+'邊塊在前面左側','p10.png',13,4,14,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[5][1]==color1 and initial_color[1][7]==color2):
+            operation=['白'+string+'邊塊在前面下方','p14.png',7,7,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[1][7]==color1 and initial_color[5][1]==color2):
+            operation=['白'+string+'邊塊在前面下方','p14.png',7,13,4,14,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[0][5]==color1 and initial_color[3][1]==color2):
+            operation=['白'+string+'邊塊在上面右側','p6.png',1,14,2,13,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[3][1]==color1 and initial_color[0][5]==color2):
+            operation=['白'+string+'邊塊在上面右側','p6.png',1,8,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[2][3]==color1 and initial_color[3][5]==color2):
+            operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面右側','p12.png',14,8,13,'回到左側面',20,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[3][5]==color1 and initial_color[2][3]==color2):
+            operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面右側','p12.png',14,14,2,13,13,'回到左側面',20,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[5][5]==color1 and initial_color[3][7]==color2):
+            operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面下方','p14.png',14,7,7,13,'回到左側面',20,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[3][7]==color1 and initial_color[5][5]==color2):
+            operation=['白'+string+'邊塊在右側面',19,'白'+string+'邊塊在前面下方','p14.png',14,7,13,4,'回到左側面',20,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]        
+        elif(initial_color[0][3]==color1 and initial_color[4][1]==color2):
+            operation=['白'+string+'邊塊在上面左側','p4.png',14,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[4][1]==color1 and initial_color[0][3]==color2):
+            operation=['白'+string+'邊塊在上面左側','p4.png',3,7,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]       
+        elif(initial_color[2][5]==color1 and initial_color[4][3]==color2):
+            operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面左側','p10.png',13,7,14,'回到右側面',19,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[4][3]==color1 and initial_color[2][5]==color2):
+            operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面左側','p10.png',13,13,4,14,14,'回到右側面',19,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[5][3]==color1 and initial_color[4][7]==color2):
+            operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面下方','p14.png',13,7,7,14,'回到右側面',19,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[4][7]==color1 and initial_color[5][3]==color2):
+            operation=['白'+string+'邊塊在左側面',20,'白'+string+'邊塊在前面下方','p14.png',13,8,14,2,'回到右側面',19,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]        
+        elif(initial_color[0][1]==color1 and initial_color[2][1]==color2):
+            operation=['白'+string+'邊塊在上面上方','p2.png',3,13,13,4,'白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[2][1]==color1 and initial_color[0][1]==color2):
+            operation=['白'+string+'邊塊在後面',20,20,'白'+string+'邊塊在前面上方','p8.png',7,13,2,14,'回到前面',19,19,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]        
+        elif(initial_color[5][7]==color1 and initial_color[2][7]==color2):
+            operation=['白'+string+'邊塊在後面',20,20,'白'+string+'邊塊在前面下方','p14.png',14,14,7,7,14,14,'回到前面',19,19,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+        elif(initial_color[2][7]==color1 and initial_color[5][7]==color2):
+            operation=['白'+string+'邊塊在後面',20,20,'白'+string+'邊塊在前面下方','p14.png',14,14,7,13,4,13,'回到前面',19,19,
+                       '白'+string+'邊塊已在正確位置 往右進行下一步','p8.png',19]
+            
+        
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
+            
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
                   
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
+                toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
+                operation=operation[1:]
+                
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
+                
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
+                file.write('')
+                file.close()
+                
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
+         
 
-    
-for it in range(0,4):#完成角塊
-    
-    if(it==0):
-        color1=9
-        string1='藍'
-        string2='橘'
-    elif(it==1):
-        color1=3
-        string1='橘'
-        string2='綠'
-    elif(it==2):
-        color1=1
-        string1='綠'
-        string2='紅'
-    elif(it==3):
-        color1=7
-        string1='紅'
-        string2='藍'
-        
     toImage = Image.new('RGBA',(800,100))
     fromImge = Image.open('white.png')
     loc = (0,0)
     toImage.paste(fromImge, loc)
     font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
     draw = ImageDraw.Draw(toImage)
-    draw.text((20, 40), '將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間',font=font, fill=(0,0,0))
+    draw.text((20, 40), '接下來完成四個角塊',font=font, fill=(0,0,0))
     toImage.save('word.png')
     toImage = Image.new('RGBA',(800,500))
     fromImge = Image.open('white.png')
@@ -1214,357 +1251,376 @@ for it in range(0,4):#完成角塊
     fromImge = Image.open('word.png')
     loc = (0,0)
     toImage.paste(fromImge, loc)
-    fromImge = Image.open('q'+str(it+7)+'.png')
+    fromImge = Image.open('q6.png')
     loc = (0,100)
     toImage.paste(fromImge, loc)
     toImage.save('image.png')
     cv2.imshow('flow', image1)
-    
+    i1=0
     file=open("./title_text.txt","w")
-    file.write('將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間')
+    file.write('接下來完成四個角塊')
     file.write('\n')
     file.close()
-    
+
     file=open("./title_img.txt","w")
-    file.write('q'+str(it+7)+'.png')
+    file.write('q6.png')
     file.write('\n')
     file.close()
-    
-    file=open("./subtitle_text.txt","w")
-    file.write('')
-    file.close()
-    
+
+
     file=open("./subtitle_img.txt","w")
     file.write('')
     file.close()
 
-    ii=0
-    while(ii<1):
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./step_img.txt","w")
+    file.write('')
+    file.close()
+    while(i1<50):
         image=read_image()
         cv2.imshow('camera', image)
-        ii=ii+1
-    
-    operation=[]
-    print('將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間')
-    
-    if(initial_color[0][8]==color1):
-        operation=['白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[1][2]==color1):
-        operation=['白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
-                   2,8,1,7,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[3][0]==color1):
-        operation=['白'+string1+string2+'角塊在右側面',19,'白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
-                   4,7,3,8,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        i1=i1+1
+                      
+
         
-    elif(initial_color[1][8]==color1):
-        operation=['白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[5][2]==color1):
-        operation=['白'+string1+string2+'角塊在底面右邊 用角塊右四步法 將白'+string1+string2+'角塊轉至右上角','j1.png',
-                   2,8,1,7,'白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
-                   2,8,1,7,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[3][6]==color1):
-        operation=['白'+string1+string2+'角塊在右側面',19,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+    for it in range(0,4):#完成角塊
         
-    elif(initial_color[0][6]==color1):
-        operation=['白'+string1+string2+'角塊在上面左邊(位置錯誤) 用角塊左四步法 將白'+string1+string2+'角塊轉下來','j8.png',
-                   4,7,3,8,'白'+string1+string2+'角塊在左側面',20,'右轉對齊',13,
-                   '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'左轉歸位',14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[1][0]==color1):
-        operation=['白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
-                   4,7,3,8,'右轉對齊',13,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'左轉歸位',14,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[4][2]==color1):
-        operation=['白'+string1+string2+'角塊在左側面',20,'白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
-                   2,8,1,7,'右轉對齊',13,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'左轉歸位',14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-        
-    elif(initial_color[1][6]==color1):
-        operation=['右轉對齊',13,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'左轉歸位',14,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[5][0]==color1):
-        operation=['右轉對齊',13,'白'+string1+string2+'角塊在底面左邊 用角塊右四步法 將白'+string1+string2+'角塊轉至左上角','j4.png',
-                   4,7,3,8,'白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
-                   4,7,3,8,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'左轉歸位',14,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[4][8]==color1):
-        operation=['白'+string1+string2+'角塊在左側面',20,'右轉對齊',13,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'左轉歸位',14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]#
-        
-    elif(initial_color[0][0]==color1):
-        operation=['白'+string1+string2+'角塊在後面',20,20,
-                   '白'+string1+string2+'角塊在上面右邊(位置錯誤) 用角塊右四步法 將白'+string1+string2+'角塊轉下來','j7.png',
-                   2,8,1,7,'白'+string1+string2+'角塊在右側面',19,'右轉對齊',13,13,
-                   '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'左轉歸位',14,14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[2][2]==color1):
-        operation=['白'+string1+string2+'角塊在後面',20,20,
-                   '白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
-                   2,8,1,7,'右轉對齊',13,13,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'左轉歸位',14,14,'回到前面',19,19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[4][0]==color1):
-        operation=['白'+string1+string2+'角塊在左側面',20,
-                   '白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
-                   4,7,3,8,'右轉對齊',13,13,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'左轉歸位',14,14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-        
-    elif(initial_color[2][8]==color1):
-        operation=['白'+string1+string2+'角塊在後面',20,20,'右轉對齊',13,13,
-                   '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'左轉歸位',14,14,'回到前面',19,19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[5][6]==color1):
-        operation=['白'+string1+string2+'角塊在後面',20,20,'右轉對齊',13,13,
-                   '白'+string1+string2+'角塊在底面右邊 用角塊右四步法 將白'+string1+string2+'角塊轉至右上角','j1.png',
-                   2,8,1,7,'白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
-                   2,8,1,7,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'左轉歸位',14,14,'回到前面',19,19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[4][6]==color1):
-        operation=['白'+string1+string2+'角塊在左側面',20,'右轉對齊',13,13,
-                   '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'左轉歸位',14,14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-        
-    elif(initial_color[0][2]==color1):
-        operation=['白'+string1+string2+'角塊在後面',19,19,
-                   '白'+string1+string2+'角塊在上面左邊(位置錯誤) 用角塊左四步法 將白'+string1+string2+'角塊轉下來','j8.png',
-                   4,7,3,8,'白'+string1+string2+'角塊在左側面',20,'左轉對齊',14,
-                   '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'右轉歸位',13,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[2][0]==color1):
-        operation=['白'+string1+string2+'角塊在後面',19,19,
-                   '白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
-                   4,7,3,8,'左轉對齊',14,
-                   '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'右轉歸位',13,'回到前面',20,20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[3][2]==color1):
-        operation=['白'+string1+string2+'角塊在右側面',19,
-                   '白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
-                   2,8,1,7,'左轉對齊',14,
-                   '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'右轉歸位',13,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-        
-    elif(initial_color[2][6]==color1):
-        operation=['白'+string1+string2+'角塊在後面',19,19,'左轉對齊',14,
-                   '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'右轉歸位',13,'回到前面',20,20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[5][8]==color1):
-        operation=['白'+string1+string2+'角塊在後面',19,19,'左轉對齊',14,
-                   '白'+string1+string2+'角塊在底面左邊 用角塊右四步法 將白'+string1+string2+'角塊轉至左上角','j4.png',
-                   4,7,3,8, '白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
-                   4,7,3,8, '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
-                   4,7,3,8,'右轉歸位',13,'回到前面',20,20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    elif(initial_color[3][8]==color1):
-        operation=['白'+string1+string2+'角塊在右側面',19,'左轉對齊',14,
-                   '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
-                   2,8,1,7,'右轉歸位',13,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
-    
-        
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
-            break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
+        if(it==0):
+            color1=9
+            string1='藍'
+            string2='橘'
+        elif(it==1):
+            color1=3
+            string1='橘'
+            string2='綠'
+        elif(it==2):
+            color1=1
+            string1='綠'
+            string2='紅'
+        elif(it==3):
+            color1=7
+            string1='紅'
+            string2='藍'
             
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
+        toImage = Image.new('RGBA',(800,100))
+        fromImge = Image.open('white.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+        draw = ImageDraw.Draw(toImage)
+        draw.text((20, 40), '將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間',font=font, fill=(0,0,0))
+        toImage.save('word.png')
+        toImage = Image.new('RGBA',(800,500))
+        fromImge = Image.open('white.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        fromImge = Image.open('word.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        fromImge = Image.open('q'+str(it+7)+'.png')
+        loc = (0,100)
+        toImage.paste(fromImge, loc)
+        toImage.save('image.png')
+        cv2.imshow('flow', image1)
+        
+        file=open("./title_text.txt","w")
+        file.write('將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間')
+        file.write('\n')
+        file.close()
+        
+        file=open("./title_img.txt","w")
+        file.write('q'+str(it+7)+'.png')
+        file.write('\n')
+        file.close()
+        
+        file=open("./subtitle_text.txt","w")
+        file.write('')
+        file.close()
+        
+        file=open("./subtitle_img.txt","w")
+        file.write('')
+        file.close()
+        
+        file=open("./step_img.txt","w")
+        file.write('')
+        file.close()
+
+        ii=0
+        while(ii<1):
+            image=read_image()
+            cv2.imshow('camera', image)
+            ii=ii+1
+        
+        operation=[]
+        print('將白'+string1+string2+'角塊轉至 白'+string1+'邊塊和白'+string2+'邊塊之間')
+        
+        if(initial_color[0][8]==color1):
+            operation=['白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[1][2]==color1):
+            operation=['白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
+                       2,8,1,7,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[3][0]==color1):
+            operation=['白'+string1+string2+'角塊在右側面',19,'白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
+                       4,7,3,8,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
             
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
+        elif(initial_color[1][8]==color1):
+            operation=['白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[5][2]==color1):
+            operation=['白'+string1+string2+'角塊在底面右邊 用角塊右四步法 將白'+string1+string2+'角塊轉至右上角','j1.png',
+                       2,8,1,7,'白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
+                       2,8,1,7,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[3][6]==color1):
+            operation=['白'+string1+string2+'角塊在右側面',19,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+            
+        elif(initial_color[0][6]==color1):
+            operation=['白'+string1+string2+'角塊在上面左邊(位置錯誤) 用角塊左四步法 將白'+string1+string2+'角塊轉下來','j8.png',
+                       4,7,3,8,'白'+string1+string2+'角塊在左側面',20,'右轉對齊',13,
+                       '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'左轉歸位',14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[1][0]==color1):
+            operation=['白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
+                       4,7,3,8,'右轉對齊',13,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'左轉歸位',14,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[4][2]==color1):
+            operation=['白'+string1+string2+'角塊在左側面',20,'白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
+                       2,8,1,7,'右轉對齊',13,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'左轉歸位',14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+            
+        elif(initial_color[1][6]==color1):
+            operation=['右轉對齊',13,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'左轉歸位',14,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[5][0]==color1):
+            operation=['右轉對齊',13,'白'+string1+string2+'角塊在底面左邊 用角塊右四步法 將白'+string1+string2+'角塊轉至左上角','j4.png',
+                       4,7,3,8,'白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
+                       4,7,3,8,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'左轉歸位',14,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[4][8]==color1):
+            operation=['白'+string1+string2+'角塊在左側面',20,'右轉對齊',13,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'左轉歸位',14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]#
+            
+        elif(initial_color[0][0]==color1):
+            operation=['白'+string1+string2+'角塊在後面',20,20,
+                       '白'+string1+string2+'角塊在上面右邊(位置錯誤) 用角塊右四步法 將白'+string1+string2+'角塊轉下來','j7.png',
+                       2,8,1,7,'白'+string1+string2+'角塊在右側面',19,'右轉對齊',13,13,
+                       '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'左轉歸位',14,14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[2][2]==color1):
+            operation=['白'+string1+string2+'角塊在後面',20,20,
+                       '白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
+                       2,8,1,7,'右轉對齊',13,13,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'左轉歸位',14,14,'回到前面',19,19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[4][0]==color1):
+            operation=['白'+string1+string2+'角塊在左側面',20,
+                       '白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
+                       4,7,3,8,'右轉對齊',13,13,'白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'左轉歸位',14,14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+            
+        elif(initial_color[2][8]==color1):
+            operation=['白'+string1+string2+'角塊在後面',20,20,'右轉對齊',13,13,
+                       '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'左轉歸位',14,14,'回到前面',19,19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[5][6]==color1):
+            operation=['白'+string1+string2+'角塊在後面',20,20,'右轉對齊',13,13,
+                       '白'+string1+string2+'角塊在底面右邊 用角塊右四步法 將白'+string1+string2+'角塊轉至右上角','j1.png',
+                       2,8,1,7,'白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
+                       2,8,1,7,'白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'左轉歸位',14,14,'回到前面',19,19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[4][6]==color1):
+            operation=['白'+string1+string2+'角塊在左側面',20,'右轉對齊',13,13,
+                       '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'左轉歸位',14,14,'回到右側面',19,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+            
+        elif(initial_color[0][2]==color1):
+            operation=['白'+string1+string2+'角塊在後面',19,19,
+                       '白'+string1+string2+'角塊在上面左邊(位置錯誤) 用角塊左四步法 將白'+string1+string2+'角塊轉下來','j8.png',
+                       4,7,3,8,'白'+string1+string2+'角塊在左側面',20,'左轉對齊',14,
+                       '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'右轉歸位',13,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[2][0]==color1):
+            operation=['白'+string1+string2+'角塊在後面',19,19,
+                       '白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
+                       4,7,3,8,'左轉對齊',14,
+                       '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'右轉歸位',13,'回到前面',20,20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[3][2]==color1):
+            operation=['白'+string1+string2+'角塊在右側面',19,
+                       '白'+string1+string2+'角塊在右上角 用角塊右四步法 將白'+string1+string2+'角塊轉至右下角','j2.png',
+                       2,8,1,7,'左轉對齊',14,
+                       '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'右轉歸位',13,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+            
+        elif(initial_color[2][6]==color1):
+            operation=['白'+string1+string2+'角塊在後面',19,19,'左轉對齊',14,
+                       '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'右轉歸位',13,'回到前面',20,20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[5][8]==color1):
+            operation=['白'+string1+string2+'角塊在後面',19,19,'左轉對齊',14,
+                       '白'+string1+string2+'角塊在底面左邊 用角塊右四步法 將白'+string1+string2+'角塊轉至左上角','j4.png',
+                       4,7,3,8, '白'+string1+string2+'角塊在左上角 用角塊左四步法 將白'+string1+string2+'角塊轉至左下角','j5.png',
+                       4,7,3,8, '白'+string1+string2+'角塊在左下角 用角塊左四步法 將白'+string1+string2+'角塊轉至正確位置','j6.png',
+                       4,7,3,8,'右轉歸位',13,'回到前面',20,20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        elif(initial_color[3][8]==color1):
+            operation=['白'+string1+string2+'角塊在右側面',19,'左轉對齊',14,
+                       '白'+string1+string2+'角塊在右下角 用角塊右四步法 將白'+string1+string2+'角塊轉至正確位置','j3.png',
+                       2,8,1,7,'右轉歸位',13,'回到左側面',20,'白'+string1+string2+'角塊已在正確位置 往右進行下一步','p9.png',19]
+        
+            
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
+            
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
                 file.write('\n')
-            else:
-                file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
                 toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
                 operation=operation[1:]
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
                 
-toImage = Image.new('RGBA',(800,100))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-draw = ImageDraw.Draw(toImage)
-draw.text((20, 40), '接下來完成第二層',font=font, fill=(0,0,0))
-toImage.save('word.png')
-toImage = Image.new('RGBA',(800,500))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('word.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('q11.png')
-loc = (0,100)
-toImage.paste(fromImge, loc)
-toImage.save('image.png')
-cv2.imshow('flow', image1)
-i1=0
-file=open("./title_text.txt","w")
-file.write('接下來完成第二層')
-file.write('\n')
-file.close() 
-
-file=open("./title_img.txt","w")
-file.write('q11.png')
-file.write('\n')
-file.close()         
-
-
-file=open("./subtitle_img.txt","w")
-file.write('')
-file.close()
-
-file=open("./subtitle_text.txt","w")
-file.write('')
-file.close()
-
-file=open("./step_img.txt","w")
-file.write('')
-file.close()
-while(i1<50):
-    image=read_image()
-    cv2.imshow('camera', image)
-    i1=i1+1  
-
-
-
-
-while (1):#翻到底部
-    
-    print('第一層已完成')
-    operation=['翻至底部準備',15,15]
-           
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
-            break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
-            
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
-            
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
-                file.write('\n')
-            else:
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
                 file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
-                toImage.paste(fromImge, loc)
-                operation=operation[1:]
+                file.close()
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-    break
-
-
-for it in range(0,4):
-    
-    if(it==0):
-        color1=13
-        string1='藍'
-        string2='紅'
-    elif(it==1):
-        color1=40
-        string1='紅'
-        string2='綠'
-    elif(it==2):
-        color1=22
-        string1='綠'
-        string2='橘'
-    elif(it==3):
-        color1=31
-        string1='橘'
-        string2='藍'
-        
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
+                    
     toImage = Image.new('RGBA',(800,100))
     fromImge = Image.open('white.png')
     loc = (0,0)
     toImage.paste(fromImge, loc)
     font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
     draw = ImageDraw.Draw(toImage)
-    draw.text((20, 40), '將'+string1+string2+'邊塊轉至正確位置',font=font, fill=(0,0,0))
+    draw.text((20, 40), '接下來完成第二層',font=font, fill=(0,0,0))
     toImage.save('word.png')
     toImage = Image.new('RGBA',(800,500))
     fromImge = Image.open('white.png')
@@ -1573,855 +1629,1564 @@ for it in range(0,4):
     fromImge = Image.open('word.png')
     loc = (0,0)
     toImage.paste(fromImge, loc)
-    fromImge = Image.open('q'+str(it+12)+'.png')
+    fromImge = Image.open('q11.png')
     loc = (0,100)
     toImage.paste(fromImge, loc)
     toImage.save('image.png')
     cv2.imshow('flow', image1)
-    
+    i1=0
     file=open("./title_text.txt","w")
-    file.write('將'+string1+string2+'邊塊轉至正確位置')
-    file.write('\n')
-    file.close()
-    
-    file=open("./title_img.txt","w")
-    file.write('q'+str(it+12)+'.png')
+    file.write('接下來完成第二層')
     file.write('\n')
     file.close() 
 
-    ii=0
-    while(ii<1):
+    file=open("./title_img.txt","w")
+    file.write('q11.png')
+    file.write('\n')
+    file.close()         
+
+
+    file=open("./subtitle_img.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./step_img.txt","w")
+    file.write('')
+    file.close()
+    while(i1<50):
         image=read_image()
         cv2.imshow('camera', image)
-        ii=ii+1
-    
-    print('將'+string1+string2+'邊塊轉至正確位置')
-    operation=[]
-    
-    if(initial_color[1][1]==color1):
-        operation=['用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[4][1]==color1):
-        operation=[string1+string2+'邊塊在左方','p4.png',14,'用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[2][1]==color1):
-        operation=[string1+string2+'邊塊在後方','p2.png',14,14,'用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[3][1]==color1):
-        operation=[string1+string2+'邊塊在右方','p6.png',13,'用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        i1=i1+1  
+
+
+
+
+    while (1):#翻到底部
         
-    elif(initial_color[0][7]==color1):
-        operation=['翻至右側面準備',19,string1+string2+'邊塊在左方','p4.png',14,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
-                   14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[0][5]==color1):
-        operation=['翻至右側面準備',19,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
-                   14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[0][1]==color1):
-        operation=['翻至右側面準備',19,string1+string2+'邊塊在右方','p6.png',13,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
-                   14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[0][3]==color1):
-        operation=['翻至右側面準備',19,string1+string2+'邊塊在後方','p2.png',13,13,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
-                   14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        print('第一層已完成')
+        operation=['翻至底部準備',15,15]
+               
+        print_op(operation[0])
         
-    elif(initial_color[1][5]==color1):
-        operation=[string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[3][5]==color1):
-        operation=[string1+string2+'邊塊在右側面',19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊在後方','p2.png',13,13,
-                   '用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
-                   14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[2][5]==color1):
-        operation=[string1+string2+'邊塊在後面',19,19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
-                   13,2,14,1,14,8,13,7,'翻至左側面準備',20,string1+string2+'邊塊在左方','p4.png',14,
-                   '用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
-                   14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[4][5]==color1):
-        operation=[string1+string2+'邊塊在左側面',20,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
-                   13,2,14,1,14,8,13,7,'翻至後面準備',19,19,
-                   '用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
-                   14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        wrong_key=0
+        error=[]
         
-    elif(initial_color[3][3]==color1):
-        operation=[string1+string2+'邊塊在正確位置 但方向錯誤 用右邊塊八步法將其轉出來','m3.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊在後方','p2.png',13,13,
-                   '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[2][3]==color1):
-        operation=[string1+string2+'邊塊在右側面',19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
-                   13,2,14,1,14,8,13,7,'翻至左側面準備',20,string1+string2+'邊塊在左方','p4.png',14,
-                   '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[4][3]==color1):
-        operation=[string1+string2+'邊塊在後面',19,19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
-                   13,2,14,1,14,8,13,7,'翻至後面準備',20,20,
-                   '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    elif(initial_color[1][3]==color1):
-        operation=[string1+string2+'邊塊在左側面',20,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
-                   13,2,14,1,14,8,13,7,'翻至右側面準備',19,'邊塊在右方','p6.png',13,
-                   '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
-                   13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
-    
-    
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
         
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
-            break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
             
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
             
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
                 file.write('\n')
-            else:
-                file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
                 toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
                 operation=operation[1:]
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-
-print('完成第二層')
-
-
-toImage = Image.new('RGBA',(800,100))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-draw = ImageDraw.Draw(toImage)
-draw.text((20, 40), '接下來完成第二面',font=font, fill=(0,0,0))
-toImage.save('word.png')
-toImage = Image.new('RGBA',(800,500))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('word.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('q17.png')
-loc = (0,100)
-toImage.paste(fromImge, loc)
-toImage.save('image.png')
-cv2.imshow('flow', image1)
-i1=0
-file=open("./title_text.txt","w")
-file.write('接下來完成第二面')
-file.write('\n')
-file.close()
-
-file=open("./title_img.txt","w")
-file.write('q17.png')
-file.write('\n')
-file.close() 
-
-
-file=open("./subtitle_img.txt","w")
-file.write('')
-file.close()
-
-file=open("./subtitle_text.txt","w")
-file.write('')
-file.close()
-
-file=open("./step_img.txt","w")
-file.write('')
-file.close()
-while(i1<50):
-    image=read_image()
-    cv2.imshow('camera', image)
-    i1=i1+1    
-    
-
-    
-while (1):#頂面角塊都不是黃色
-    
-    operation=[]
-    
-    check_yellow_flag=0
-    
-    if(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==0
-      and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==0):
-        check_yellow_flag=1
-        print('頂面角塊沒有黃色')
-    
-    if check_yellow_flag==0:
-        break
-    
-    operation=['頂面角塊沒有黃色 使用六步法 讓頂面角塊出現兩個黃色','u1.png',1,14,8,13,7,2]
-    
-    
-        
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
-            break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
-            
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
-            
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
-                file.write('\n')
-            else:
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
+                
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
                 file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
-                toImage.paste(fromImge, loc)
-                operation=operation[1:]
+                file.close()
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-
-while (1):#頂面角塊兩個黃色
-    
-    operation=[]
-    
-    check_yellow_flag=0
-    
-    if(check_if_yellow_edge(initial_color[0][1])==1 and check_if_yellow_edge(initial_color[0][3])==0
-      and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==1):#直線
-        check_yellow_flag=1
-        operation=['直線型 使用六步法 將黃色角塊變成倒L型','u2.png',1,14,8,13,7,2]
-    elif(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==1
-      and check_if_yellow_edge(initial_color[0][5])==1 and check_if_yellow_edge(initial_color[0][7])==0):#橫線
-        check_yellow_flag=1
-        operation=['右轉讓黃色角塊變成一直線','u3.png',13]
-    elif(check_if_yellow_edge(initial_color[0][1])==1 and check_if_yellow_edge(initial_color[0][3])==0
-      and check_if_yellow_edge(initial_color[0][5])==1 and check_if_yellow_edge(initial_color[0][7])==0):#上右
-        check_yellow_flag=1
-        operation=['左轉將黃色角塊變成倒L型','u4.png',14]
-    elif(check_if_yellow_edge(initial_color[0][1])==1 and check_if_yellow_edge(initial_color[0][3])==1
-      and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==0):#上左
-        check_yellow_flag=1
-        operation=['倒L型 使用六步法 讓頂面角塊出現四個黃色','u5.png',1,14,8,13,7,2]
-    elif(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==0
-      and check_if_yellow_edge(initial_color[0][5])==1 and check_if_yellow_edge(initial_color[0][7])==1):#下右
-        check_yellow_flag=1
-        operation=['右轉將黃色角塊變成倒L型','u6.png',13,13]
-    elif(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==1
-      and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==1):#下左
-        check_yellow_flag=1
-        operation=['右轉將黃色角塊變成倒L型','u7.png',13]
-    
-    if check_yellow_flag==0:
-        break
-        
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
-            break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
-            
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
-            
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
                 file.write('\n')
-            else:
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
                 file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
-                toImage.paste(fromImge, loc)
-                operation=operation[1:]
-                
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-                
-while (1):#頂面邊塊都是黃色
-    
-    operation=[]
-    
-    check_yellow_flag=0
-    
-    if(check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[1][2])==1
-      and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#十字
-        check_yellow_flag=1
-        operation=['右轉使開口面向自己','a1.png',13]
-    elif(check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[3][2])==1
-      and check_if_yellow_edge(initial_color[4][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#十字
-        check_yellow_flag=1
-        operation=['十字型 利用七步法 出現魚型','a2.png',2,14,4,13,1,14,3]
-    elif(check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[1][2])==1
-      and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][0])==1):#十字
-        check_yellow_flag=1
-        operation=['右轉使開口面向自己','a3.png',13,13]
-    elif(check_if_yellow_edge(initial_color[1][2])==1 and check_if_yellow_edge(initial_color[2][0])==1
-      and check_if_yellow_edge(initial_color[4][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#十字
-        check_yellow_flag=1
-        operation=['右轉使開口面向自己','a4.png',13]
-    elif(check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[3][2])==1
-      and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#十字
-        check_yellow_flag=1
-        operation=['左轉使開口面向自己','a5.png',14]
-    elif(check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[2][2])==1
-      and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#十字
-        check_yellow_flag=1
-        operation=['十字型 利用七步法 出現魚型','a6.png',2,14,4,13,1,14,3]
-        
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][8])==1
-      and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[3][2])==1):#對角
-        check_yellow_flag=1
-        operation=['對角型 利用七步法 出現魚型','a7.png',2,14,4,13,1,14,3]
-    elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][6])==1
-      and check_if_yellow_edge(initial_color[1][2])==1 and check_if_yellow_edge(initial_color[4][0])==1):#對角
-        check_yellow_flag=1
-        operation=['左轉使開口朝右下','a8.png',14]
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][8])==1
-      and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#對角
-        check_yellow_flag=1
-        operation=['左轉使開口朝右下','a9.png',14,14]
-    elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][6])==1
-      and check_if_yellow_edge(initial_color[2][2])==1 and check_if_yellow_edge(initial_color[3][0])==1):#對角
-        check_yellow_flag=1
-        operation=['右轉使開口朝右下','a10.png',13]
-        
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][2])==1
-      and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[1][2])==1):#凸型1
-        check_yellow_flag=1
-        operation=['凸型(兩角塊在一起) 利用七步法 出現魚型','a11.png',2,14,4,13,1,14,3]
-    elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][8])==1
-      and check_if_yellow_edge(initial_color[4][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#凸型1
-        check_yellow_flag=1
-        operation=['左轉使凸型頂部面向自己','a12.png',14]
-    elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[0][8])==1
-      and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#凸型1
-        check_yellow_flag=1
-        operation=['左轉使凸型頂部面向自己','a13.png',14,14]
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][6])==1
-      and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[3][2])==1):#凸型1
-        check_yellow_flag=1
-        operation=['右轉使凸型頂部面向自己','a14.png',13]
-        
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][2])==1
-      and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#凸型2
-        check_yellow_flag=1
-        operation=['右轉使凸型頂部朝左','a15.png',13]
-    elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][8])==1
-      and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#凸型2
-        check_yellow_flag=1
-        operation=['凸型(兩角塊分開) 利用七步法 出現魚型','a16.png',2,14,4,13,1,14,3]
-    elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[0][8])==1
-      and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][0])==1):#凸型2
-        check_yellow_flag=1
-        operation=['左轉使凸型頂部朝左','a17.png',14]
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][6])==1
-      and check_if_yellow_edge(initial_color[1][2])==1 and check_if_yellow_edge(initial_color[2][0])==1):#凸型2
-        check_yellow_flag=1
-        operation=['右轉使凸型頂部朝左','a18.png',13,13]
-        
-    elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[2][0])==1
-      and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][0])==1):#右魚1
-        check_yellow_flag=1
-        operation=['假魚型(前方右上不是黃色) 利用七步法 出現真魚型','a19.png',2,14,4,13,1,14,3]
-    elif(check_if_yellow_edge(initial_color[0][8])==1 and check_if_yellow_edge(initial_color[1][0])==1
-      and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[4][0])==1):#右魚1
-        check_yellow_flag=1
-        operation=['右轉使魚頭朝左下','a20.png',13]
-    elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[1][0])==1
-      and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][0])==1):#右魚1
-        check_yellow_flag=1
-        operation=['左轉使魚頭朝左下','a21.png',14,14]
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[1][0])==1
-      and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[3][0])==1):#右魚1
-        check_yellow_flag=1
-        operation=['左轉使魚頭朝左下','a22.png',14]
-        
-    elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[1][2])==1
-      and check_if_yellow_edge(initial_color[2][2])==1 and check_if_yellow_edge(initial_color[3][2])==1):#右魚
-        check_yellow_flag=1
-        operation=['真魚型(前方右上是黃色) 利用七步法 完成第二面','a23.png',2,14,4,13,1,14,3]
-    elif(check_if_yellow_edge(initial_color[0][8])==1 and check_if_yellow_edge(initial_color[2][2])==1
-      and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][2])==1):#右魚
-        check_yellow_flag=1
-        operation=['右轉使魚頭朝左下','a20.png',13]
-    elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[1][2])==1
-      and check_if_yellow_edge(initial_color[2][2])==1 and check_if_yellow_edge(initial_color[4][2])==1):#右魚
-        check_yellow_flag=1
-        operation=['左轉使魚頭朝左下','a21.png',14,14]
-    elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[1][2])==1
-      and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][2])==1):#右魚
-        check_yellow_flag=1
-        operation=['左轉使魚頭朝左下','a22.png',14]
-        
-    if check_yellow_flag==0:
+                file.close()
         break
 
-    
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
+
+    for it in range(0,4):
         
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
-            break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
+        if(it==0):
+            color1=13
+            string1='藍'
+            string2='紅'
+        elif(it==1):
+            color1=40
+            string1='紅'
+            string2='綠'
+        elif(it==2):
+            color1=22
+            string1='綠'
+            string2='橘'
+        elif(it==3):
+            color1=31
+            string1='橘'
+            string2='藍'
             
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
+        toImage = Image.new('RGBA',(800,100))
+        fromImge = Image.open('white.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+        draw = ImageDraw.Draw(toImage)
+        draw.text((20, 40), '將'+string1+string2+'邊塊轉至正確位置',font=font, fill=(0,0,0))
+        toImage.save('word.png')
+        toImage = Image.new('RGBA',(800,500))
+        fromImge = Image.open('white.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        fromImge = Image.open('word.png')
+        loc = (0,0)
+        toImage.paste(fromImge, loc)
+        fromImge = Image.open('q'+str(it+12)+'.png')
+        loc = (0,100)
+        toImage.paste(fromImge, loc)
+        toImage.save('image.png')
+        cv2.imshow('flow', image1)
+        
+        file=open("./title_text.txt","w")
+        file.write('將'+string1+string2+'邊塊轉至正確位置')
+        file.write('\n')
+        file.close()
+        
+        file=open("./title_img.txt","w")
+        file.write('q'+str(it+12)+'.png')
+        file.write('\n')
+        file.close() 
+
+        ii=0
+        while(ii<1):
+            image=read_image()
+            cv2.imshow('camera', image)
+            ii=ii+1
+        
+        print('將'+string1+string2+'邊塊轉至正確位置')
+        operation=[]
+        
+        if(initial_color[1][1]==color1):
+            operation=['用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[4][1]==color1):
+            operation=[string1+string2+'邊塊在左方','p4.png',14,'用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[2][1]==color1):
+            operation=[string1+string2+'邊塊在後方','p2.png',14,14,'用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[3][1]==color1):
+            operation=[string1+string2+'邊塊在右方','p6.png',13,'用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
             
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
+        elif(initial_color[0][7]==color1):
+            operation=['翻至右側面準備',19,string1+string2+'邊塊在左方','p4.png',14,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
+                       14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[0][5]==color1):
+            operation=['翻至右側面準備',19,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
+                       14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[0][1]==color1):
+            operation=['翻至右側面準備',19,string1+string2+'邊塊在右方','p6.png',13,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
+                       14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[0][3]==color1):
+            operation=['翻至右側面準備',19,string1+string2+'邊塊在後方','p2.png',13,13,'用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
+                       14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+            
+        elif(initial_color[1][5]==color1):
+            operation=[string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[3][5]==color1):
+            operation=[string1+string2+'邊塊在右側面',19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊在後方','p2.png',13,13,
+                       '用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
+                       14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[2][5]==color1):
+            operation=[string1+string2+'邊塊在後面',19,19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
+                       13,2,14,1,14,8,13,7,'翻至左側面準備',20,string1+string2+'邊塊在左方','p4.png',14,
+                       '用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
+                       14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[4][5]==color1):
+            operation=[string1+string2+'邊塊在左側面',20,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
+                       13,2,14,1,14,8,13,7,'翻至後面準備',19,19,
+                       '用左邊塊八步法 將'+string1+string2+'轉至正確位置','m2.png',
+                       14,4,13,3,13,7,14,8,'回到左側面',20,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+            
+        elif(initial_color[3][3]==color1):
+            operation=[string1+string2+'邊塊在正確位置 但方向錯誤 用右邊塊八步法將其轉出來','m3.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊在後方','p2.png',13,13,
+                       '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[2][3]==color1):
+            operation=[string1+string2+'邊塊在右側面',19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
+                       13,2,14,1,14,8,13,7,'翻至左側面準備',20,string1+string2+'邊塊在左方','p4.png',14,
+                       '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[4][3]==color1):
+            operation=[string1+string2+'邊塊在後面',19,19,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
+                       13,2,14,1,14,8,13,7,'翻至後面準備',20,20,
+                       '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        elif(initial_color[1][3]==color1):
+            operation=[string1+string2+'邊塊在左側面',20,string1+string2+'邊塊在錯誤位置 用右邊塊八步法將其轉出來','m3.png',
+                       13,2,14,1,14,8,13,7,'翻至右側面準備',19,'邊塊在右方','p6.png',13,
+                       '用右邊塊八步法 將'+string1+string2+'轉至正確位置','m1.png',
+                       13,2,14,1,14,8,13,7,string1+string2+'邊塊已在正確位置 往右進行下一步','p12.png',19]
+        
+        
+            
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
+            
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
                 file.write('\n')
-            else:
-                file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
                 toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
                 operation=operation[1:]
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-    
-toImage = Image.new('RGBA',(800,100))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-draw = ImageDraw.Draw(toImage)
-draw.text((20, 40), '接下來完成最後一層',font=font, fill=(0,0,0))
-toImage.save('word.png')
-toImage = Image.new('RGBA',(800,500))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('word.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('q18.png')
-loc = (0,100)
-toImage.paste(fromImge, loc)
-toImage.save('image.png')
-cv2.imshow('flow', image1)
-i1=0
-file=open("./title_text.txt","w")
-file.write('接下來完成最後一層')
-file.write('\n')
-file.close() 
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
+                
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
+                file.write('')
+                file.close()
+                
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
 
-file=open("./title_img.txt","w")
-file.write('q18.png')
-file.write('\n')
-file.close()  
+    print('完成第二層')
 
-file=open("./subtitle_img.txt","w")
-file.write('')
-file.close()
 
-file=open("./subtitle_text.txt","w")
-file.write('')
-file.close()
+    toImage = Image.new('RGBA',(800,100))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+    draw = ImageDraw.Draw(toImage)
+    draw.text((20, 40), '接下來完成第二面',font=font, fill=(0,0,0))
+    toImage.save('word.png')
+    toImage = Image.new('RGBA',(800,500))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    fromImge = Image.open('word.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    fromImge = Image.open('q17.png')
+    loc = (0,100)
+    toImage.paste(fromImge, loc)
+    toImage.save('image.png')
+    cv2.imshow('flow', image1)
+    i1=0
+    file=open("./title_text.txt","w")
+    file.write('接下來完成第二面')
+    file.write('\n')
+    file.close()
 
-file=open("./step_img.txt","w")
-file.write('')
-file.close()
-while(i1<50):
-    image=read_image()
-    cv2.imshow('camera', image)
-    i1=i1+1 
-    
+    file=open("./title_img.txt","w")
+    file.write('q17.png')
+    file.write('\n')
+    file.close() 
 
-    
-while (1):#
-    
-    operation=[]
-    
-    check_yellow_flag=0
-    
-    if(check_blue()==0 and check_green()==0 and check_orange()==0 and check_red()==0):
-        check_yellow_flag=1
-        operation=['利用十三步法 讓右側兩邊塊對調 使同顏色角塊在同一面','b1.png',2,14,14,1,14,2,14,14,4,13,1,14,3]
+
+    file=open("./subtitle_img.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./step_img.txt","w")
+    file.write('')
+    file.close()
+    while(i1<50):
+        image=read_image()
+        cv2.imshow('camera', image)
+        i1=i1+1    
         
-    elif(check_blue()+check_green()+check_orange()+check_red()==10):
-        check_yellow_flag=1
-        if(initial_color[1][4]==initial_color[1][0]-4):
-            check_yellow_flag=0
-        elif(initial_color[1][4]==initial_color[2][0]-4):
+
+        
+    while (1):#頂面角塊都不是黃色
+        
+        operation=[]
+        
+        check_yellow_flag=0
+        
+        if(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==0
+          and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==0):
             check_yellow_flag=1
-            operation=['右轉使邊塊和中心塊對齊','b3.png',13,13]
-        elif(initial_color[1][4]==initial_color[3][0]-4):
+            print('頂面角塊沒有黃色')
+        
+        if check_yellow_flag==0:
+            break
+        
+        operation=['頂面角塊沒有黃色 使用六步法 讓頂面角塊出現兩個黃色','u1.png',1,14,8,13,7,2]
+        
+        
+            
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
+            
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
+                toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
+                operation=operation[1:]
+                
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
+                
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
+                file.write('')
+                file.close()
+                
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
+
+    while (1):#頂面角塊兩個黃色
+        
+        operation=[]
+        
+        check_yellow_flag=0
+        
+        if(check_if_yellow_edge(initial_color[0][1])==1 and check_if_yellow_edge(initial_color[0][3])==0
+          and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==1):#直線
             check_yellow_flag=1
-            operation=['右轉使邊塊和中心塊對齊','b2.png',13]
-        elif(initial_color[1][4]==initial_color[4][0]-4):
+            operation=['直線型 使用六步法 將黃色角塊變成倒L型','u2.png',1,14,8,13,7,2]
+        elif(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==1
+          and check_if_yellow_edge(initial_color[0][5])==1 and check_if_yellow_edge(initial_color[0][7])==0):#橫線
             check_yellow_flag=1
-            operation=['左轉使邊塊和中心塊對齊','b4.png',14]
-    else:
-        if(check_blue()==1 or check_green()==1 or check_orange()==1 or check_red()==1):
+            operation=['右轉讓黃色角塊變成一直線','u3.png',13]
+        elif(check_if_yellow_edge(initial_color[0][1])==1 and check_if_yellow_edge(initial_color[0][3])==0
+          and check_if_yellow_edge(initial_color[0][5])==1 and check_if_yellow_edge(initial_color[0][7])==0):#上右
             check_yellow_flag=1
-            operation=['右轉使處理好的邊塊在左側','b5.png',13]
-        elif(check_blue()==2 or check_green()==2 or check_orange()==2 or check_red()==2):
+            operation=['左轉將黃色角塊變成倒L型','u4.png',14]
+        elif(check_if_yellow_edge(initial_color[0][1])==1 and check_if_yellow_edge(initial_color[0][3])==1
+          and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==0):#上左
             check_yellow_flag=1
-            operation=['右轉使處理好的邊塊在左側','b6.png',13,13]
-        elif(check_blue()==3 or check_green()==3 or check_orange()==3 or check_red()==3):
+            operation=['倒L型 使用六步法 讓頂面角塊出現四個黃色','u5.png',1,14,8,13,7,2]
+        elif(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==0
+          and check_if_yellow_edge(initial_color[0][5])==1 and check_if_yellow_edge(initial_color[0][7])==1):#下右
             check_yellow_flag=1
-            operation=['左轉使處理好的邊塊在左側','b7.png',14]
-        elif(check_blue()==4 or check_green()==4 or check_orange()==4 or check_red()==4):
+            operation=['右轉將黃色角塊變成倒L型','u6.png',13,13]
+        elif(check_if_yellow_edge(initial_color[0][1])==0 and check_if_yellow_edge(initial_color[0][3])==1
+          and check_if_yellow_edge(initial_color[0][5])==0 and check_if_yellow_edge(initial_color[0][7])==1):#下左
+            check_yellow_flag=1
+            operation=['右轉將黃色角塊變成倒L型','u7.png',13]
+        
+        if check_yellow_flag==0:
+            break
+            
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
+            
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
+                toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
+                operation=operation[1:]
+                
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
+                
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
+                file.write('')
+                file.close()
+                
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
+                    
+    while (1):#頂面邊塊都是黃色
+        
+        operation=[]
+        
+        check_yellow_flag=0
+        
+        if(check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[1][2])==1
+          and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#十字
+            check_yellow_flag=1
+            operation=['右轉使開口面向自己','a1.png',13]
+        elif(check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[3][2])==1
+          and check_if_yellow_edge(initial_color[4][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#十字
+            check_yellow_flag=1
+            operation=['十字型 利用七步法 出現魚型','a2.png',2,14,4,13,1,14,3]
+        elif(check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[1][2])==1
+          and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][0])==1):#十字
+            check_yellow_flag=1
+            operation=['右轉使開口面向自己','a3.png',13,13]
+        elif(check_if_yellow_edge(initial_color[1][2])==1 and check_if_yellow_edge(initial_color[2][0])==1
+          and check_if_yellow_edge(initial_color[4][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#十字
+            check_yellow_flag=1
+            operation=['右轉使開口面向自己','a4.png',13]
+        elif(check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[3][2])==1
+          and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#十字
+            check_yellow_flag=1
+            operation=['左轉使開口面向自己','a5.png',14]
+        elif(check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[2][2])==1
+          and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#十字
+            check_yellow_flag=1
+            operation=['十字型 利用七步法 出現魚型','a6.png',2,14,4,13,1,14,3]
+            
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][8])==1
+          and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[3][2])==1):#對角
+            check_yellow_flag=1
+            operation=['對角型 利用七步法 出現魚型','a7.png',2,14,4,13,1,14,3]
+        elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][6])==1
+          and check_if_yellow_edge(initial_color[1][2])==1 and check_if_yellow_edge(initial_color[4][0])==1):#對角
+            check_yellow_flag=1
+            operation=['左轉使開口朝右下','a8.png',14]
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][8])==1
+          and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#對角
+            check_yellow_flag=1
+            operation=['左轉使開口朝右下','a9.png',14,14]
+        elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][6])==1
+          and check_if_yellow_edge(initial_color[2][2])==1 and check_if_yellow_edge(initial_color[3][0])==1):#對角
+            check_yellow_flag=1
+            operation=['右轉使開口朝右下','a10.png',13]
+            
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][2])==1
+          and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[1][2])==1):#凸型1
+            check_yellow_flag=1
+            operation=['凸型(兩角塊在一起) 利用七步法 出現魚型','a11.png',2,14,4,13,1,14,3]
+        elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][8])==1
+          and check_if_yellow_edge(initial_color[4][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#凸型1
+            check_yellow_flag=1
+            operation=['左轉使凸型頂部面向自己','a12.png',14]
+        elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[0][8])==1
+          and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#凸型1
+            check_yellow_flag=1
+            operation=['左轉使凸型頂部面向自己','a13.png',14,14]
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][6])==1
+          and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[3][2])==1):#凸型1
+            check_yellow_flag=1
+            operation=['右轉使凸型頂部面向自己','a14.png',13]
+            
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][2])==1
+          and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][2])==1):#凸型2
+            check_yellow_flag=1
+            operation=['右轉使凸型頂部朝左','a15.png',13]
+        elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[0][8])==1
+          and check_if_yellow_edge(initial_color[1][0])==1 and check_if_yellow_edge(initial_color[2][2])==1):#凸型2
+            check_yellow_flag=1
+            operation=['凸型(兩角塊分開) 利用七步法 出現魚型','a16.png',2,14,4,13,1,14,3]
+        elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[0][8])==1
+          and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][0])==1):#凸型2
+            check_yellow_flag=1
+            operation=['左轉使凸型頂部朝左','a17.png',14]
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[0][6])==1
+          and check_if_yellow_edge(initial_color[1][2])==1 and check_if_yellow_edge(initial_color[2][0])==1):#凸型2
+            check_yellow_flag=1
+            operation=['右轉使凸型頂部朝左','a18.png',13,13]
+            
+        elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[2][0])==1
+          and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][0])==1):#右魚1
+            check_yellow_flag=1
+            operation=['假魚型(前方右上不是黃色) 利用七步法 出現真魚型','a19.png',2,14,4,13,1,14,3]
+        elif(check_if_yellow_edge(initial_color[0][8])==1 and check_if_yellow_edge(initial_color[1][0])==1
+          and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[4][0])==1):#右魚1
+            check_yellow_flag=1
+            operation=['右轉使魚頭朝左下','a20.png',13]
+        elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[1][0])==1
+          and check_if_yellow_edge(initial_color[3][0])==1 and check_if_yellow_edge(initial_color[4][0])==1):#右魚1
+            check_yellow_flag=1
+            operation=['左轉使魚頭朝左下','a21.png',14,14]
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[1][0])==1
+          and check_if_yellow_edge(initial_color[2][0])==1 and check_if_yellow_edge(initial_color[3][0])==1):#右魚1
+            check_yellow_flag=1
+            operation=['左轉使魚頭朝左下','a22.png',14]
+            
+        elif(check_if_yellow_edge(initial_color[0][6])==1 and check_if_yellow_edge(initial_color[1][2])==1
+          and check_if_yellow_edge(initial_color[2][2])==1 and check_if_yellow_edge(initial_color[3][2])==1):#右魚
+            check_yellow_flag=1
+            operation=['真魚型(前方右上是黃色) 利用七步法 完成第二面','a23.png',2,14,4,13,1,14,3]
+        elif(check_if_yellow_edge(initial_color[0][8])==1 and check_if_yellow_edge(initial_color[2][2])==1
+          and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][2])==1):#右魚
+            check_yellow_flag=1
+            operation=['右轉使魚頭朝左下','a20.png',13]
+        elif(check_if_yellow_edge(initial_color[0][2])==1 and check_if_yellow_edge(initial_color[1][2])==1
+          and check_if_yellow_edge(initial_color[2][2])==1 and check_if_yellow_edge(initial_color[4][2])==1):#右魚
+            check_yellow_flag=1
+            operation=['左轉使魚頭朝左下','a21.png',14,14]
+        elif(check_if_yellow_edge(initial_color[0][0])==1 and check_if_yellow_edge(initial_color[1][2])==1
+          and check_if_yellow_edge(initial_color[3][2])==1 and check_if_yellow_edge(initial_color[4][2])==1):#右魚
+            check_yellow_flag=1
+            operation=['左轉使魚頭朝左下','a22.png',14]
+            
+        if check_yellow_flag==0:
+            break
+
+        
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
+            
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
+                toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
+                operation=operation[1:]
+                
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
+                
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
+                file.write('')
+                file.close()
+                
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
+        
+    toImage = Image.new('RGBA',(800,100))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+    draw = ImageDraw.Draw(toImage)
+    draw.text((20, 40), '接下來完成最後一層',font=font, fill=(0,0,0))
+    toImage.save('word.png')
+    toImage = Image.new('RGBA',(800,500))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    fromImge = Image.open('word.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    fromImge = Image.open('q18.png')
+    loc = (0,100)
+    toImage.paste(fromImge, loc)
+    toImage.save('image.png')
+    cv2.imshow('flow', image1)
+    i1=0
+    file=open("./title_text.txt","w")
+    file.write('接下來完成最後一層')
+    file.write('\n')
+    file.close() 
+
+    file=open("./title_img.txt","w")
+    file.write('q18.png')
+    file.write('\n')
+    file.close()  
+
+    file=open("./subtitle_img.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./step_img.txt","w")
+    file.write('')
+    file.close()
+    while(i1<50):
+        image=read_image()
+        cv2.imshow('camera', image)
+        i1=i1+1 
+        
+
+        
+    while (1):#
+        
+        operation=[]
+        
+        check_yellow_flag=0
+        
+        if(check_blue()==0 and check_green()==0 and check_orange()==0 and check_red()==0):
             check_yellow_flag=1
             operation=['利用十三步法 讓右側兩邊塊對調 使同顏色角塊在同一面','b1.png',2,14,14,1,14,2,14,14,4,13,1,14,3]
-    
-    if check_yellow_flag==0:
-        break
+            
+        elif(check_blue()+check_green()+check_orange()+check_red()==10):
+            check_yellow_flag=1
+            if(initial_color[1][4]==initial_color[1][0]-4):
+                check_yellow_flag=0
+            elif(initial_color[1][4]==initial_color[2][0]-4):
+                check_yellow_flag=1
+                operation=['右轉使邊塊和中心塊對齊','b3.png',13,13]
+            elif(initial_color[1][4]==initial_color[3][0]-4):
+                check_yellow_flag=1
+                operation=['右轉使邊塊和中心塊對齊','b2.png',13]
+            elif(initial_color[1][4]==initial_color[4][0]-4):
+                check_yellow_flag=1
+                operation=['左轉使邊塊和中心塊對齊','b4.png',14]
+        else:
+            if(check_blue()==1 or check_green()==1 or check_orange()==1 or check_red()==1):
+                check_yellow_flag=1
+                operation=['右轉使處理好的邊塊在左側','b5.png',13]
+            elif(check_blue()==2 or check_green()==2 or check_orange()==2 or check_red()==2):
+                check_yellow_flag=1
+                operation=['右轉使處理好的邊塊在左側','b6.png',13,13]
+            elif(check_blue()==3 or check_green()==3 or check_orange()==3 or check_red()==3):
+                check_yellow_flag=1
+                operation=['左轉使處理好的邊塊在左側','b7.png',14]
+            elif(check_blue()==4 or check_green()==4 or check_orange()==4 or check_red()==4):
+                check_yellow_flag=1
+                operation=['利用十三步法 讓右側兩邊塊對調 使同顏色角塊在同一面','b1.png',2,14,14,1,14,2,14,14,4,13,1,14,3]
         
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
+        if check_yellow_flag==0:
             break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
             
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
             
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
                 file.write('\n')
-            else:
-                file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
                 toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
                 operation=operation[1:]
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
+                
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
+                file.write('')
+                file.close()
+                
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
 
-while (1):#
-    
-    operation=[]
-    
-    check_yellow_flag=0
-    
-    if(check_edge_and_middle(initial_color[1][1],initial_color[1][4])==0 and
-       check_edge_and_middle(initial_color[2][1],initial_color[2][4])==0 and
-       check_edge_and_middle(initial_color[3][1],initial_color[3][4])==0 and
-       check_edge_and_middle(initial_color[4][1],initial_color[4][4])==0):
-        check_yellow_flag=1
-        operation=['四面頂塊未對齊 利用右頂部角塊法 解出第三面','c1.png',10,10,13,9,13,13,10,13,10,10]
-    elif(check_edge_and_middle(initial_color[1][1],initial_color[1][4])==1 and
-       check_edge_and_middle(initial_color[2][1],initial_color[2][4])==1 and
-       check_edge_and_middle(initial_color[3][1],initial_color[3][4])==1 and
-       check_edge_and_middle(initial_color[4][1],initial_color[4][4])==1):
+    while (1):#
+        
+        operation=[]
+        
         check_yellow_flag=0
-    elif(check_edge_and_middle(initial_color[1][1],initial_color[1][4])==1):
-        check_yellow_flag=1
-        operation=['使剛完成的第三面到背面',19,19]
-    elif(check_edge_and_middle(initial_color[3][1],initial_color[3][4])==1):
-        check_yellow_flag=1
-        operation=['使剛完成的第三面到背面',20]
-    elif(check_edge_and_middle(initial_color[4][1],initial_color[4][4])==1):
-        check_yellow_flag=1
-        operation=['使剛完成的第三面到背面',19]
-    elif(initial_color[1][4]+3==initial_color[4][1]):
-        check_yellow_flag=1
-        operation=['利用右頂部角塊法 解出魔術方塊','c1.png',10,10,13,9,13,13,10,13,10,10]
-    elif(initial_color[1][4]+3==initial_color[3][1]):
-        check_yellow_flag=1
-        operation=['利用左頂部角塊法 解出魔術方塊','c2.png',10,10,14,9,13,13,10,14,10,10]
         
+        if(check_edge_and_middle(initial_color[1][1],initial_color[1][4])==0 and
+           check_edge_and_middle(initial_color[2][1],initial_color[2][4])==0 and
+           check_edge_and_middle(initial_color[3][1],initial_color[3][4])==0 and
+           check_edge_and_middle(initial_color[4][1],initial_color[4][4])==0):
+            check_yellow_flag=1
+            operation=['四面頂塊未對齊 利用右頂部角塊法 解出第三面','c1.png',10,10,13,9,13,13,10,13,10,10]
+        elif(check_edge_and_middle(initial_color[1][1],initial_color[1][4])==1 and
+           check_edge_and_middle(initial_color[2][1],initial_color[2][4])==1 and
+           check_edge_and_middle(initial_color[3][1],initial_color[3][4])==1 and
+           check_edge_and_middle(initial_color[4][1],initial_color[4][4])==1):
+            check_yellow_flag=0
+        elif(check_edge_and_middle(initial_color[1][1],initial_color[1][4])==1):
+            check_yellow_flag=1
+            operation=['使剛完成的第三面到背面',19,19]
+        elif(check_edge_and_middle(initial_color[3][1],initial_color[3][4])==1):
+            check_yellow_flag=1
+            operation=['使剛完成的第三面到背面',20]
+        elif(check_edge_and_middle(initial_color[4][1],initial_color[4][4])==1):
+            check_yellow_flag=1
+            operation=['使剛完成的第三面到背面',19]
+        elif(initial_color[1][4]+3==initial_color[4][1]):
+            check_yellow_flag=1
+            operation=['利用右頂部角塊法 解出魔術方塊','c1.png',10,10,13,9,13,13,10,13,10,10]
+        elif(initial_color[1][4]+3==initial_color[3][1]):
+            check_yellow_flag=1
+            operation=['利用左頂部角塊法 解出魔術方塊','c2.png',10,10,14,9,13,13,10,14,10,10]
+            
 
-    
-    if check_yellow_flag==0:
-        break
         
-    print_op(operation[0])
-    
-    if(operation[0]==13 or operation[0]==14):
-        key=0
-    elif(operation[0]==19 or operation[0]==20):
-        key=1
-    
-    while(len(operation)!=0):
-        change_flag=read_image_and_detect_change()
-        
-        if(change_flag==operation[0] and len(operation)==1):
-            operation=[]
+        if check_yellow_flag==0:
             break
-        elif(change_flag==operation[0]):
-            operation=operation[1:]
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
-        elif(check_str(str(operation[0]))==1):
-            print(operation[0])
             
-            file=open("./subtitle_text.txt","w")
-            file.write(operation[0])
-            file.write('\n')
-            file.close()
+        print_op(operation[0])
+        
+        wrong_key=0
+        error=[]
+        
+        if(operation[0]==13 or operation[0]==14):
+            key=0
+        elif(operation[0]==19 or operation[0]==20):
+            key=1
+        
+        while(len(operation)!=0):
+            change_flag=read_image_and_detect_change()
             
-            file=open("./subtitle_img.txt","w")
-            if(check_str(str(operation[1]))==1):
-                file.write(operation[1])
+            
+            if(change_flag==operation[0] and len(operation)==1 and wrong_key==0):
+                operation=[]
+                break
+            elif(len(error)==1 and change_flag==error[0] and wrong_key==1):
+               
+                wrong_key=0
+                error=[]
+                former.pop()
+                former1=former1+1
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+                  
+                file=open("./subtitle_text.txt","w")
+                file.write(buffer1)
                 file.write('\n')
-            else:
-                file.write('')
-            file.close()
-            
-            toImage = Image.new('RGBA',(800,300))
-            fromImge = Image.open('white.png')
-            loc = (0,0)
-            toImage.paste(fromImge, loc)
-            font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-            draw = ImageDraw.Draw(toImage)
-            draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
-            
-            operation=operation[1:]
-            
-            if(check_str(str(operation[0]))==1):
-                fromImge = Image.open(operation[0])
-                loc = (0,100)
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(buffer2))==1):
+                    file.write(buffer2)
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+            elif(change_flag==operation[0] and wrong_key==0):
+                operation=operation[1:]
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif(len(error)!=0 and change_flag==error[0] and wrong_key==1):
+                error=error[1:]
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                #print_operations(error)
+                if(error[0]==13 or error[0]==14):
+                    key=0
+                elif(error[0]==19 or error[0]==20):
+                    key=1
+            elif(check_str(str(operation[0]))==1):
+                print(operation[0])
+                buffer1=operation[0]
+                buffer2=operation[1]
+                
+                file=open("./subtitle_text.txt","w")
+                file.write(operation[0])
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                if(check_str(str(operation[1]))==1):
+                    file.write(operation[1])
+                    file.write('\n')
+                else:
+                    file.write('')
+                file.close()
+                
+                toImage = Image.new('RGBA',(800,300))
+                fromImge = Image.open('white.png')
+                loc = (0,0)
                 toImage.paste(fromImge, loc)
+                font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+                draw = ImageDraw.Draw(toImage)
+                draw.text((20, 40), operation[0],font=font, fill=(0,0,0))
+                
                 operation=operation[1:]
                 
-            toImage.save('word.png')
-            print_operations(operation)
-            if(operation[0]==13 or operation[0]==14):
-                key=0
-            elif(operation[0]==19 or operation[0]==20):
-                key=1
+                if(check_str(str(operation[0]))==1):
+                    fromImge = Image.open(operation[0])
+                    loc = (0,100)
+                    toImage.paste(fromImge, loc)
+                    operation=operation[1:]
+                    
+                toImage.save('word.png')
+                print_operations(operation)
+                if(operation[0]==13 or operation[0]==14):
+                    key=0
+                elif(operation[0]==19 or operation[0]==20):
+                    key=1
+            elif((change_flag!=operation[0] and change_flag!=0 and wrong_key==0) or
+                 (len(error)!=0 and change_flag!=error[0] and change_flag!=0 and wrong_key==1)):
                 
-'''print('display:')
-for i in range(0,6):
-    print('\n')
-    for j in range(0,3):
-        print(print_color(initial_color[i][3*j]),
-              print_color(initial_color[i][3*j+1]),
-              print_color(initial_color[i][3*j+2]),'\n')'''
-        
-print("well done!")
+                if(wrong_key==0):
+                    file=open("./step_img.txt","r")
+                    lines=file.readlines()
+                    file.close()
+                
+                wrong_key=1
+                file=open("./step_img.txt","w")
+                file.write('')
+                file.close()
+                
+                if(change_flag%2==0):
+                    wrong_op=change_flag-1
+                else :
+                    wrong_op=change_flag+1
+                    
+                if(len(error)==0):  
+                    error.append(wrong_op)
+                else:
+                    error.insert(0,wrong_op)
+                
+                file=open("./step_img.txt","w")
+                for ll in error:
+                    file.write(str(ll)+'.png')
+                    file.write('\n')
+                file.close()
+                
+                if(len(error)>=4):
+                    run()
+                
+                file=open("./subtitle_text.txt","w")
+                file.write('轉動錯誤 請往回')
+                file.write('\n')
+                file.close()
+                
+                file=open("./subtitle_img.txt","w")
+                file.write('')
+                file.close()
+                    
+    '''print('display:')
+    for i in range(0,6):
+        print('\n')
+        for j in range(0,3):
+            print(print_color(initial_color[i][3*j]),
+                  print_color(initial_color[i][3*j+1]),
+                  print_color(initial_color[i][3*j+2]),'\n')'''
+            
+    print("well done!")
 
-toImage = Image.new('RGBA',(800,100))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
-draw = ImageDraw.Draw(toImage)
-draw.text((20, 40), 'Well Done!',font=font, fill=(0,0,0))
-toImage.save('word.png')
-toImage = Image.new('RGBA',(800,500))
-fromImge = Image.open('white.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-fromImge = Image.open('word.png')
-loc = (0,0)
-toImage.paste(fromImge, loc)
-toImage.save('image.png')
-cv2.imshow('flow', image1)
-i1=0
-file=open("./title_text.txt","w")
-print('well done')
-file.write('\n')
-file.close()
+    toImage = Image.new('RGBA',(800,100))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    font = ImageFont.truetype("SimHei.ttf", 20, encoding="utf-8")
+    draw = ImageDraw.Draw(toImage)
+    draw.text((20, 40), 'Well Done!',font=font, fill=(0,0,0))
+    toImage.save('word.png')
+    toImage = Image.new('RGBA',(800,500))
+    fromImge = Image.open('white.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    fromImge = Image.open('word.png')
+    loc = (0,0)
+    toImage.paste(fromImge, loc)
+    toImage.save('image.png')
+    cv2.imshow('flow', image1)
+    i1=0
+    file=open("./title_text.txt","w")
+    print('well done')
+    file.write('\n')
+    file.close()
 
-file=open("./title_img.txt","w")
-file.write('')
-file.close()
-
-
-file=open("./subtitle_img.txt","w")
-file.write('')
-file.close()
-
-file=open("./subtitle_text.txt","w")
-file.write('')
-file.close()
-
-file=open("./step_img.txt","w")
-file.write('')
-file.close()
-while(1):
-    image=read_image()
-    cv2.imshow('camera', image)
-    i1=i1+1
+    file=open("./title_img.txt","w")
+    file.write('')
+    file.close()
 
 
+    file=open("./subtitle_img.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./subtitle_text.txt","w")
+    file.write('')
+    file.close()
+
+    file=open("./step_img.txt","w")
+    file.write('')
+    file.close()
+    while(1):
+        image=read_image()
+        cv2.imshow('camera', image)
+        i1=i1+1
+run()

@@ -12,9 +12,19 @@ app = Flask(__name__)
 detector1 = apriltag.Detector(families='tag36h11')
 
 
+def is_valid_jpg(jpg_file):      
+    with open(jpg_file, 'rb') as f:               
+        f.seek(-2, 2) 
+        if f.read() == '\xff\xd9':
+            return False
+        else:
+            cv2.imread(jpg_file)
+
 def gen_frames():
     while True:
-        frame = cv2.imread("a.jpg")
+        frame = is_valid_jpg("a.jpg")
+        if frame==False:
+            continue
         if frame is None:
             continue
         ret, buffer = cv2.imencode('.jpg', frame)
