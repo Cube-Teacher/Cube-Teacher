@@ -27,12 +27,9 @@ app.get('/', (req, res) => {
 });
 
 app.get("/stream.jpg", (req,res)=>{
-    request('http://127.0.0.1:5000/flask', function (error, response, body) {
-        // console.error('error:', error);                             // Print the error
-        // console.log('statusCode:', response && response.statusCode);// Print the response status code if a response was received
-        // console.log('body:', body);     
-        
-    }).pipe(res);
+    // request('http://127.0.0.1:5000/flask', function (error, response, body) {
+    // }).pipe(res);
+    res.sendFile(__dirname + "/public/img/a.jpg");
 })
 
 app.get('/initend', (req, res) => {
@@ -72,6 +69,7 @@ app.get("/clearcommand", (req,res) => {
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
 });
+
 
 function deleteInit(){
     fs.writeFile("./public/img/init.txt","",function(err){

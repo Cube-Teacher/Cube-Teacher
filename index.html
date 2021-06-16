@@ -13,6 +13,32 @@
   <body>
     <title>Cube Teacher🚀️</title>
     <main></main>
-    <img src="stream.jpg" style="position: relative; top:350px; left:0px; height: 50%; width: 23%; object-fit: contain;">
+    <img id="stream" src="stream.jpg" style="position: relative; top:350px; left:0px; height: 50%; width: 23%; object-fit: contain;">
+    <script type="text/javascript">
+      function refresh(node)
+      {
+        var times = 100; // gap in Milli Seconds;
+
+        (function startRefresh()
+        {
+            var address;
+            if(node.src.indexOf('?')>-1)
+            address = node.src.split('?')[0];
+            else 
+            address = node.src;
+            node.src = address+"?time="+new Date().getTime();
+
+            setTimeout(startRefresh,times);
+        })();
+
+      }
+
+      window.onload = function()
+      {
+        var node = document.getElementById('stream');
+        refresh(node);
+        // you can refresh as many images you want just repeat above steps
+      }
+    </script>
   </body>
 </html>
