@@ -27,9 +27,9 @@ app.get('/', (req, res) => {
 });
 
 app.get("/stream.jpg", (req,res)=>{
-    // request('http://127.0.0.1:5000/flask', function (error, response, body) {
-    // }).pipe(res);
-    res.sendFile(__dirname + "/public/img/a.jpg");
+    request('http://127.0.0.1:5000/flask', function (error, response, body) {
+    }).pipe(res);
+    // res.sendFile(__dirname + "/public/img/a.jpg");
 })
 
 app.get('/initend', (req, res) => {
