@@ -11,20 +11,9 @@ app = Flask(__name__)
 # camera = cv2.VideoCapture(0)
 detector1 = apriltag.Detector(families='tag36h11')
 
-
-def is_valid_jpg(jpg_file):      
-    with open(jpg_file, 'rb') as f:               
-        f.seek(-2, 2) 
-        if f.read() == '\xff\xd9':
-            cv2.imread(jpg_file)
-        else:
-            return False
-            
 def gen_frames():
     while True:
-        frame = is_valid_jpg("a.jpg")
-        if frame==False:
-            continue
+        frame = cv2.imread("a.jpg")
         if frame is None:
             continue
         ret, buffer = cv2.imencode('.jpg', frame)
