@@ -16,10 +16,10 @@ def is_valid_jpg(jpg_file):
     with open(jpg_file, 'rb') as f:               
         f.seek(-2, 2) 
         if f.read() == '\xff\xd9':
-            return False
-        else:
             cv2.imread(jpg_file)
-
+        else:
+            return False
+            
 def gen_frames():
     while True:
         frame = is_valid_jpg("a.jpg")
