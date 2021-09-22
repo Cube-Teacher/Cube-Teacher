@@ -1,5 +1,5 @@
 # Cube-Teacher
-Final Project of NYCU Introduction to Embedded Systems Design and Implementatio.
+A tool to help you solving Rubik's Cube step by step base on Raspberry pi4 and Pi-camera.
 
 ## dependency
 
